@@ -1,0 +1,6 @@
+{
+  "name": "مركز بيانات محطات المياه",
+  "description": "منظومة متكاملة لإدارة ومراقبة بيانات تشغيل محطات مياه الشرب والملف الفني والكيماويات والكهرباء والأعطال بشركة مياه الشرب والصرف الصحي بالجيزة",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
