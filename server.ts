@@ -1,24 +1,22 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
 import { initDb } from './src/db/database.js';
 import { apiRouter } from './src/db/api.js';
-import fs from 'fs';
+
+dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function startServer() {
-  // Ensure data directory exists
-  const dataDir = path.join(__dirname, 'data');
-  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+  // Initialize MySQL
+  await initDb();
 
-  // Initialize database
-  initDb();
-
-  const app = express();
-  const PORT = parseInt(process.env.PORT || '3000');
-  const isDev = process.env.NODE_ENV !== 'production';
+  const app    = express();
+  const PORT   = parseInt(process.env.PORT || '3000');
+  const isDev  = process.env.NODE_ENV !== 'production';
 
   app.use(express.json({ limit: '10mb' }));
 
@@ -34,10 +32,14 @@ async function startServer() {
   }
 
   app.listen(PORT, () => {
-    console.log(`💧 Water Stations Hub running on http://localhost:${PORT}`);
-    console.log(`📊 API available at http://localhost:${PORT}/api`);
-    console.log(`🗄️  Database: ./data/water_stations.db`);
+    console.log(`\n💧 Water Stations Hub`);
+    console.log(`🚀 Server:   http://localhost:${PORT}`);
+    console.log(`📡 API:      http://localhost:${PORT}/api/health`);
+    console.log(`🗄️  Database: MySQL → ${process.env.DB_NAME || 'water_stations'}@${process.env.DB_HOST || 'localhost'}\n`);
   });
 }
 
-startServer().catch(console.error);
+startServer().catch(err => {
+  console.error('❌ Server failed to start:', err);
+  process.exit(1);
+});
