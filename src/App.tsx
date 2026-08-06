@@ -119,7 +119,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex text-slate-900 font-sans dir-rtl text-right">
+    <div dir="rtl" className="min-h-screen bg-slate-100 flex text-slate-900 font-sans text-right">
       {/* Sidebar */}
       <Sidebar
         currentPage={currentPage}
