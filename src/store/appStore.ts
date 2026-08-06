@@ -206,3 +206,6 @@ export function useStore() {
   useEffect(() => { return store.subscribe(() => tick(n => n + 1)); }, []);
   return store;
 }
+
+// Alias for backward compatibility with components
+export const appStore = store;
