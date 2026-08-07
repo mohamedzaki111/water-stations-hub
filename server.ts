@@ -1,8 +1,6 @@
 import express from 'express';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { createServer as createViteServer } from 'vite';
 import { initDb } from './src/db/database.js';
 import { apiRouter } from './src/db/api.js';
 import morgan from 'morgan';
@@ -10,25 +8,22 @@ import { logger } from './src/utils/logger.js';
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname  = path.dirname(__filename);
+// CJS-safe __dirname (works in both ESM and compiled CJS)
+const __dirname = typeof __dirname !== 'undefined'
+  ? __dirname
+  : path.dirname(process.argv[1]);
 
-// When running as dist/server.cjs, static files are in same dist/ folder
-// When running as server.ts (dev), static files are in dist/ subfolder
-const isCompiledBundle = __filename.endsWith('server.cjs');
-const STATIC_DIR = isCompiledBundle
-  ? __dirname                              // dist/server.cjs → serve from dist/
-  : path.join(__dirname, 'dist');          // server.ts → serve from ./dist/
+const isBundle = process.argv[1]?.endsWith('server.cjs') ?? false;
+const STATIC   = isBundle ? __dirname : path.join(__dirname, 'dist');
+const isDev    = process.env.NODE_ENV !== 'production' && !isBundle;
 
 async function startServer() {
   await initDb();
 
-  const app   = express();
-  const PORT  = parseInt(process.env.PORT || '3000');
-  const isDev = process.env.NODE_ENV !== 'production';
+  const app  = express();
+  const PORT = parseInt(process.env.PORT || '3000');
 
   app.use(express.json({ limit: '10mb' }));
-
   // HTTP request logging using morgan and winston
   app.use(morgan('combined', {
     stream: { write: (message) => logger.info(message.trim()) }
@@ -37,17 +32,17 @@ async function startServer() {
   // API routes FIRST
   app.use('/api', apiRouter);
 
-  if (isDev && !isCompiledBundle) {
+  if (isDev) {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
     });
     app.use(vite.middlewares);
   } else {
-    // Production: serve from dist/
-    app.use(express.static(STATIC_DIR));
+    app.use(express.static(STATIC));
     app.get('*', (_req, res) => {
-      res.sendFile(path.join(STATIC_DIR, 'index.html'));
+      res.sendFile(path.join(STATIC, 'index.html'));
     });
   }
 
@@ -55,13 +50,13 @@ async function startServer() {
     logger.info(`\n💧 Water Stations Hub`);
     logger.info(`🚀 URL:      http://localhost:${PORT}`);
     logger.info(`📡 API:      http://localhost:${PORT}/api/health`);
-    logger.info(`🗄️  Mode:     ${isDev && !isCompiledBundle ? 'development' : 'production'}`);
-    logger.info(`📁 Static:   ${STATIC_DIR}`);
+    logger.info(`🗄️  Mode:     ${isDev ? 'development' : 'production'}`);
+    logger.info(`📁 Static:   ${STATIC}`);
     logger.info(`💾 Database: MySQL → ${process.env.DB_NAME || 'water_stations'}@${process.env.DB_HOST || 'localhost'}\n`);
   });
 }
 
 startServer().catch(err => {
-  logger.error('❌ Server failed to start:', err);
+  logger.error('❌ Server failed to start:', err.message);
   process.exit(1);
 });
