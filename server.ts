@@ -1,20 +1,19 @@
 import express from 'express';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { initDb } from './src/db/database.js';
 import { apiRouter } from './src/db/api.js';
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname  = path.dirname(__filename);
+// CJS-safe __dirname (works in both ESM and compiled CJS)
+const __dirname = typeof __dirname !== 'undefined'
+  ? __dirname
+  : path.dirname(process.argv[1]);
 
-// When running as dist/server.cjs → static files are in same dir (dist/)
-// When running as server.ts (dev) → static files are in ./dist/
-const isBundle  = __filename.endsWith('server.cjs');
-const STATIC    = isBundle ? __dirname : path.join(__dirname, 'dist');
-const isDev     = process.env.NODE_ENV !== 'production' && !isBundle;
+const isBundle = process.argv[1]?.endsWith('server.cjs') ?? false;
+const STATIC   = isBundle ? __dirname : path.join(__dirname, 'dist');
+const isDev    = process.env.NODE_ENV !== 'production' && !isBundle;
 
 async function startServer() {
   await initDb();
@@ -26,7 +25,6 @@ async function startServer() {
   app.use('/api', apiRouter);
 
   if (isDev) {
-    // Dynamic import so vite is NOT included in production bundle
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -34,7 +32,6 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    // Production: serve pre-built static files
     app.use(express.static(STATIC));
     app.get('*', (_req, res) => {
       res.sendFile(path.join(STATIC, 'index.html'));
@@ -42,10 +39,10 @@ async function startServer() {
   }
 
   app.listen(PORT, () => {
-    console.log(`\n Water Stations Hub`);
+    console.log(`\n Water Stations Hub running`);
     console.log(` URL:  http://localhost:${PORT}`);
-    console.log(` Mode: ${isDev ? 'development (vite)' : 'production'}`);
-    console.log(` Static: ${STATIC}\n`);
+    console.log(` Mode: ${isDev ? 'development' : 'production'}`);
+    console.log(` Static dir: ${STATIC}\n`);
   });
 }
 

@@ -24,7 +24,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 // server.ts
 var import_express2 = __toESM(require("express"), 1);
 var import_path = __toESM(require("path"), 1);
-var import_url = require("url");
 var import_dotenv = __toESM(require("dotenv"), 1);
 
 // src/db/database.ts
@@ -8245,11 +8244,9 @@ apiRouter.post("/ai/analyze-station", async (req, res) => {
 });
 
 // server.ts
-var import_meta = {};
 import_dotenv.default.config();
-var __filename = (0, import_url.fileURLToPath)(import_meta.url);
-var __dirname = import_path.default.dirname(__filename);
-var isBundle = __filename.endsWith("server.cjs");
+var __dirname = typeof __dirname !== "undefined" ? __dirname : import_path.default.dirname(process.argv[1]);
+var isBundle = process.argv[1]?.endsWith("server.cjs") ?? false;
 var STATIC = isBundle ? __dirname : import_path.default.join(__dirname, "dist");
 var isDev = process.env.NODE_ENV !== "production" && !isBundle;
 async function startServer() {
@@ -8273,10 +8270,10 @@ async function startServer() {
   }
   app.listen(PORT, () => {
     console.log(`
- Water Stations Hub`);
+ Water Stations Hub running`);
     console.log(` URL:  http://localhost:${PORT}`);
-    console.log(` Mode: ${isDev ? "development (vite)" : "production"}`);
-    console.log(` Static: ${STATIC}
+    console.log(` Mode: ${isDev ? "development" : "production"}`);
+    console.log(` Static dir: ${STATIC}
 `);
   });
 }
