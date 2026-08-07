@@ -276,3 +276,73 @@ apiRouter.delete('/breakdowns/:id', async (req, res) => {
 
 // Health check
 apiRouter.get('/health', (_req, res) => res.json({ status: 'ok', db: 'mysql', timestamp: new Date().toISOString() }));
+
+// ══════════════════════════════════════════════════════════════
+//  AI ANALYSIS — Gemini API
+// ══════════════════════════════════════════════════════════════
+apiRouter.post('/ai/analyze-station', async (req, res) => {
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey || apiKey === '""' || apiKey === '') {
+    return res.json({
+      success: false,
+      error: 'GEMINI_API_KEY غير مضبوط في ملف .env — أضف مفتاح Gemini API للحصول على التحليل الذكي',
+    });
+  }
+
+  try {
+    const { stationName, date, stats, targets, recentBreakdowns } = req.body;
+
+    const prompt = `
+أنت مهندس متخصص في محطات معالجة مياه الشرب. حلل بيانات المحطة التالية وقدم تقريراً هندسياً مختصراً بالعربية.
+
+المحطة: ${stationName}
+التاريخ: ${date}
+
+البيانات:
+- الإنتاج الكلي: ${stats?.total_prod?.toLocaleString() || 0} م³
+- متوسط الإنتاج اليومي: ${stats?.avg_production?.toLocaleString() || 0} م³/يوم
+- الكفاءة المتوسطة: ${stats?.avg_eff ? (stats.avg_eff * 100).toFixed(2) : 0}%
+- الكفاءة المستهدفة: ${targets?.efficiency_target ? (targets.efficiency_target * 100).toFixed(0) : 90}%
+- كهرباء/م³: ${stats?.avg_kwh_m3?.toFixed(4) || 0}
+- نطاق الكهرباء المقبول: ${targets?.kwh_per_m3_min || 0.18} - ${targets?.kwh_per_m3_max || 0.28}
+- إجمالي الشبة: ${stats?.total_alum?.toFixed(2) || 0} طن
+- إجمالي الكلور: ${stats?.total_chlorine?.toFixed(3) || 0} طن
+- روبة المروقات المقدرة: ${stats?.sludge_m3?.toLocaleString() || 0} م³
+
+الأعطال الأخيرة: ${recentBreakdowns?.length || 0} عطل مسجل
+
+قدم:
+1. تقييم الكفاءة التشغيلية
+2. تحليل استهلاك الكهرباء
+3. ملاحظات على الكيماويات
+4. توصيات للتحسين
+5. تنبيهات إن وجدت
+`;
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.3, maxOutputTokens: 1500 },
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.error) {
+      return res.json({ success: false, error: data.error.message });
+    }
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) return res.json({ success: false, error: 'لم يتم استلام رد من Gemini' });
+
+    res.json({ success: true, text });
+  } catch (e: any) {
+    res.json({ success: false, error: e.message });
+  }
+});
