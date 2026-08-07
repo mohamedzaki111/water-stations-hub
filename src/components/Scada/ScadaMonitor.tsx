@@ -20,7 +20,7 @@ interface LineData {
 const INITIAL: LineData[] = [
   { name:'خط الجيزة',  nameEn:'GIZA LINE',  pressure:3.00, flow:3454.28, totalFlow:38641.14, lastDayFlow:65000.92, color:'#00e5ff' },
   { name:'خط هارون',  nameEn:'HARON LINE', pressure:3.39, flow:3415.32, totalFlow:40337.65, lastDayFlow:81198.37, color:'#69ff47' },
-  { name:'خط التشيكي',nameEn:'CZECH LINE', pressure:undefined, flow:2731.20, totalFlow:32905.24, lastDayFlow:63809.16, color:'#ff6d00' },
+  { name:'خط التشيكي (جمهورية التشيك)',nameEn:'CZECH LINE', pressure:undefined, flow:2731.20, totalFlow:32905.24, lastDayFlow:63809.16, color:'#ff6d00' },
 ];
 
 function fluctuate(v: number, range: number) {
@@ -222,23 +222,33 @@ export const ScadaMonitor: React.FC = () => {
         </table>
       </div>
 
-      {/* Quick Nav — FT&PT / PUMPS / LEVEL 1 / LEVEL 2 / ALARMS مثل الشاشة الأصلية */}
-      <div className="grid grid-cols-5 gap-3">
-        {[
-          { label:'FT & PT', sub:'Flow & Pressure', icon:'📊', active:true },
-          { label:'PUMPS',   sub:'الطلمبات',        icon:'⚡', active:false },
-          { label:'LEVEL 1', sub:'خزان 1',           icon:'🏗', active:false },
-          { label:'LEVEL 2', sub:'خزان 2',           icon:'🏗', active:false },
-          { label:'ALARMS',  sub:'التنبيهات',        icon:'🔔', active:false },
-        ].map(btn => (
-          <div key={btn.label}
-            className={`rounded-xl p-3 text-center cursor-pointer border transition-all ${btn.active ? 'bg-sky-500/20 border-sky-500/40 text-sky-300' : 'bg-slate-800/40 border-slate-700 text-slate-400 hover:border-slate-500'}`}
-          >
-            <div className="text-2xl mb-1">{btn.icon}</div>
-            <div className="font-bold text-sm">{btn.label}</div>
-            <div className="text-[10px] opacity-70">{btn.sub}</div>
-          </div>
-        ))}
+      {/* Quick Nav — FT&PT / PUMPS / LEVEL 1 / LEVEL 2 / ALARMS */}
+      <div style={{display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:'12px'}}>
+        <div style={{background:'rgba(14,165,233,0.15)',border:'1px solid rgba(14,165,233,0.4)',borderRadius:'12px',padding:'12px',textAlign:'center',cursor:'pointer'}}>
+          <div style={{fontSize:'24px',marginBottom:'4px'}}>📊</div>
+          <div style={{fontWeight:'bold',fontSize:'13px',color:'#7dd3fc'}}>FT &amp; PT</div>
+          <div style={{fontSize:'10px',color:'#94a3b8'}}>Flow &amp; Pressure</div>
+        </div>
+        <div style={{background:'rgba(30,41,59,0.4)',border:'1px solid #334155',borderRadius:'12px',padding:'12px',textAlign:'center',cursor:'pointer'}}>
+          <div style={{fontSize:'24px',marginBottom:'4px'}}>⚡</div>
+          <div style={{fontWeight:'bold',fontSize:'13px',color:'#94a3b8'}}>PUMPS</div>
+          <div style={{fontSize:'10px',color:'#64748b'}}>الطلمبات</div>
+        </div>
+        <div style={{background:'rgba(30,41,59,0.4)',border:'1px solid #334155',borderRadius:'12px',padding:'12px',textAlign:'center',cursor:'pointer'}}>
+          <div style={{fontSize:'24px',marginBottom:'4px'}}>🏗</div>
+          <div style={{fontWeight:'bold',fontSize:'13px',color:'#94a3b8'}}>LEVEL 1</div>
+          <div style={{fontSize:'10px',color:'#64748b'}}>خزان 1</div>
+        </div>
+        <div style={{background:'rgba(30,41,59,0.4)',border:'1px solid #334155',borderRadius:'12px',padding:'12px',textAlign:'center',cursor:'pointer'}}>
+          <div style={{fontSize:'24px',marginBottom:'4px'}}>🏗</div>
+          <div style={{fontWeight:'bold',fontSize:'13px',color:'#94a3b8'}}>LEVEL 2</div>
+          <div style={{fontSize:'10px',color:'#64748b'}}>خزان 2</div>
+        </div>
+        <div style={{background:'rgba(30,41,59,0.4)',border:'1px solid #334155',borderRadius:'12px',padding:'12px',textAlign:'center',cursor:'pointer'}}>
+          <div style={{fontSize:'24px',marginBottom:'4px'}}>🔔</div>
+          <div style={{fontWeight:'bold',fontSize:'13px',color:'#94a3b8'}}>ALARMS</div>
+          <div style={{fontSize:'10px',color:'#64748b'}}>التنبيهات</div>
+        </div>
       </div>
 
       {/* Status note */}
