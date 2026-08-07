@@ -12,5 +12,13 @@ export default defineConfig({
   },
   server: {
     hmr: true,
+    // Let Express handle /api routes
+    proxy: {},
+  },
+  // Only use index.html as entry, not water-stations-hub.html
+  build: {
+    rollupOptions: {
+      input: path.resolve(__dirname, 'index.html'),
+    },
   },
 });
