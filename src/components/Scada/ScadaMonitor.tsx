@@ -1,238 +1,250 @@
 import React, { useState, useEffect } from 'react';
 import { appStore } from '../../store/appStore';
-import { Activity, Play, Pause, AlertCircle, Droplets, Waves, Zap, Gauge, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Activity, Pause, Play, Gauge, Droplets, AlertCircle } from 'lucide-react';
+
+// ══════════════════════════════════════════════════════════════
+//  SCADA Monitor — Flow & Pressure (مطابق لشاشة Giza Station)
+//  Lines: GIZA | HARON | CZECH
+// ══════════════════════════════════════════════════════════════
+
+interface LineData {
+  name: string;
+  nameEn: string;
+  pressure?: number;
+  flow: number;
+  totalFlow: number;
+  lastDayFlow: number;
+  color: string;
+}
+
+const INITIAL: LineData[] = [
+  { name:'خط الجيزة',  nameEn:'GIZA LINE',  pressure:3.00, flow:3454.28, totalFlow:38641.14, lastDayFlow:65000.92, color:'#00e5ff' },
+  { name:'خط هارون',  nameEn:'HARON LINE', pressure:3.39, flow:3415.32, totalFlow:40337.65, lastDayFlow:81198.37, color:'#69ff47' },
+  { name:'خط التشيكي',nameEn:'CZECH LINE', pressure:undefined, flow:2731.20, totalFlow:32905.24, lastDayFlow:63809.16, color:'#ff6d00' },
+];
+
+function fluctuate(v: number, range: number) {
+  return +(v + (Math.random() * range * 2 - range)).toFixed(2);
+}
 
 export const ScadaMonitor: React.FC = () => {
-  const [stationId, setStationId] = useState<string>(
+  const [stationId, setStationId] = useState(
     appStore.session?.station?.id || appStore.stations[0]?.id || 'giza'
   );
-  const [isRunning, setIsRunning] = useState<boolean>(true);
-  const [tank1Level, setTank1Level] = useState<number>(82);
-  const [tank2Level, setTank2Level] = useState<number>(76);
-  const [turbidityNTU, setTurbidityNTU] = useState<number>(18.4);
-  const [chlorinePpm, setChlorinePpm] = useState<number>(2.4);
-  const [networkPressure, setPressure] = useState<number>(4.8);
+  const [isRunning, setIsRunning] = useState(true);
+  const [lines, setLines] = useState<LineData[]>(INITIAL);
+  const [totalizetime] = useState('7 AM');
+  const now = new Date();
 
-  const station = appStore.stations.find((s) => s.id === stationId);
-  const specs = station?.static.technical;
+  const station = appStore.stations.find(s => s.id === stationId);
+  const isCentral = appStore.session?.isCentral;
 
-  // Live simulation effect
+  // Live simulation
   useEffect(() => {
     if (!isRunning) return;
-
-    const interval = setInterval(() => {
-      setTank1Level((prev) => Math.min(98, Math.max(20, +(prev + (Math.random() * 2 - 1)).toFixed(1))));
-      setTank2Level((prev) => Math.min(98, Math.max(20, +(prev + (Math.random() * 2 - 1)).toFixed(1))));
-      setTurbidityNTU((prev) => Math.min(100, Math.max(5, +(prev + (Math.random() * 0.4 - 0.2)).toFixed(1))));
-      setChlorinePpm((prev) => Math.min(4, Math.max(1.5, +(prev + (Math.random() * 0.1 - 0.05)).toFixed(2))));
-      setPressure((prev) => Math.min(6, Math.max(3.5, +(prev + (Math.random() * 0.2 - 0.1)).toFixed(1))));
-    }, 2500);
-
-    return () => clearInterval(interval);
+    const t = setInterval(() => {
+      setLines(prev => prev.map(l => ({
+        ...l,
+        pressure: l.pressure != null ? fluctuate(l.pressure, 0.05) : undefined,
+        flow:      fluctuate(l.flow, 12),
+        totalFlow: +(l.totalFlow + l.flow / 3600).toFixed(2),
+      })));
+    }, 2000);
+    return () => clearInterval(t);
   }, [isRunning]);
 
+  const totalNow  = lines.reduce((s, l) => s + l.flow, 0);
+  const totalM3   = lines.reduce((s, l) => s + l.totalFlow, 0);
+  const totalLast = lines.reduce((s, l) => s + l.lastDayFlow, 0);
+
+  const Blink = ({ ok }: { ok: boolean }) => (
+    <span className={`inline-block w-2 h-2 rounded-full mr-1 ${ok ? 'bg-green-400 animate-pulse' : 'bg-red-500'}`}/>
+  );
+
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* Control Bar */}
-      <div className="bg-slate-900 text-white p-5 rounded-2xl shadow-xl flex flex-wrap items-center justify-between gap-4 border border-slate-800">
+    <div className="p-4 max-w-6xl mx-auto space-y-4 font-mono" dir="rtl">
+
+      {/* Header bar — مطابق للشاشة الحقيقية */}
+      <div className="bg-[#0a0e1a] border border-[#1e3a5f] rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center border border-sky-500/30">
-            <Activity className="w-6 h-6 animate-pulse" />
+          <div className="w-10 h-10 rounded-lg bg-sky-500/20 border border-sky-500/40 flex items-center justify-center">
+            <Activity className="w-5 h-5 text-sky-400 animate-pulse"/>
           </div>
           <div>
-            <h1 className="text-lg font-bold flex items-center gap-2">
-              <span>شاشة المراقبة اللحظية (SCADA Real-Time Telemetry)</span>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${isRunning ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400'}`}>
-                {isRunning ? '● متصل ومباشر' : '⏸ إيقاف المراقبة'}
+            <div className="text-white font-bold flex items-center gap-2">
+              SCADA Real-Time Telemetry
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${isRunning ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-amber-500/20 text-amber-400 border-amber-500/30'}`}>
+                <Blink ok={isRunning}/>{isRunning ? 'متصل ومباشر' : 'موقوف'}
               </span>
-            </h1>
-            <p className="text-xs text-slate-400">
-              التتبع اللحظي لمنااسيب الخزانات والضغط وضخ الطلمبات والكيماويات
-            </p>
+            </div>
+            <div className="text-slate-400 text-xs">HYDRAULIC FLOW DIAGRAM — PROCESS CONTROL</div>
           </div>
         </div>
-
         <div className="flex items-center gap-3">
-          <select
-            value={stationId}
-            onChange={(e) => setStationId(e.target.value)}
-            className="bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs font-bold outline-none"
-          >
-            {appStore.stations.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.static.general.name}
-              </option>
-            ))}
-          </select>
-
+          {isCentral && (
+            <select
+              className="bg-[#0d1b2a] border border-slate-700 text-white text-sm rounded-lg px-3 py-1.5"
+              value={stationId}
+              onChange={e => setStationId(e.target.value)}
+            >
+              {appStore.stations.map(s => (
+                <option key={s.id} value={s.id}>{s.static.general?.name || s.id}</option>
+              ))}
+            </select>
+          )}
+          {!isCentral && (
+            <span className="text-white text-sm font-bold">{station?.static.general?.name}</span>
+          )}
           <button
-            onClick={() => setIsRunning(!isRunning)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
-              isRunning
-                ? 'bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/30'
-                : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-md'
-            }`}
+            onClick={() => setIsRunning(v => !v)}
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold border transition-all ${isRunning ? 'bg-amber-500/20 text-amber-400 border-amber-500/40 hover:bg-amber-500/30' : 'bg-green-500/20 text-green-400 border-green-500/40 hover:bg-green-500/30'}`}
           >
-            {isRunning ? <Pause size={14} /> : <Play size={14} />}
-            <span>{isRunning ? 'إيقاف التحديث' : 'بدء التحديث المباشر'}</span>
+            {isRunning ? <><Pause className="w-4 h-4"/> إيقاف</> : <><Play className="w-4 h-4"/> تشغيل</>}
           </button>
         </div>
       </div>
 
-      {/* Hydraulic Process Diagram */}
-      <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-white shadow-2xl relative overflow-hidden">
-        <div className="text-xs font-mono text-slate-500 mb-4 flex items-center justify-between">
-          <span>HYDRAULIC FLOW DIAGRAM - PROCESS CONTROL</span>
-          <span className="text-sky-400">معدل التدفق التقديري: 6,120 م³/ساعة</span>
-        </div>
-
-        {/* Process Stages Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 relative z-10">
-          {/* Stage 1: River Intake */}
-          <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3 flex flex-col justify-between">
-            <div>
-              <div className="text-xs font-bold text-sky-400 flex items-center gap-1.5 mb-2">
-                <Waves size={16} />
-                <span>1. المأخذ وطلمبات العكرة</span>
-              </div>
-              <div className="text-[11px] text-slate-400 space-y-1">
-                <div>المصدر: {station?.static.general.water_source}</div>
-                <div>النوع: {station?.static.general.intake_type}</div>
-              </div>
-            </div>
-
-            <div className="space-y-2 pt-2 border-t border-slate-800/80">
-              <div className="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center">
-                <div className="text-[10px] text-slate-500">العكارة الخام</div>
-                <div className="text-base font-extrabold text-amber-400 font-mono">
-                  {turbidityNTU} <span className="text-xs font-normal">NTU</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-slate-400">الطلمبات:</span>
-                <span className="text-emerald-400 font-bold">
-                  {specs?.raw_pumps?.count || 2} تعمل (100%)
-                </span>
-              </div>
+      {/* TOTALIZE TIME */}
+      <div className="bg-[#0a0e1a] border border-[#1e3a5f] rounded-xl p-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-6">
+          <div className="text-center">
+            <div className="text-[10px] text-slate-500 uppercase tracking-wider">TOTALIZE TIME</div>
+            <div className="text-green-400 font-bold text-sm bg-green-900/30 px-3 py-1 rounded border border-green-500/30">{totalizetime}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-[10px] text-slate-500 uppercase tracking-wider">TIME</div>
+            <div className="text-blue-400 font-bold text-sm bg-blue-900/30 px-3 py-1 rounded border border-blue-500/30">
+              {now.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'})}
             </div>
           </div>
-
-          {/* Stage 2: Clarifiers */}
-          <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3 flex flex-col justify-between">
-            <div>
-              <div className="text-xs font-bold text-teal-400 flex items-center gap-1.5 mb-2">
-                <Droplets size={16} />
-                <span>2. حوض الترويق والمروقات</span>
-              </div>
-              <div className="text-[11px] text-slate-400 space-y-1">
-                <div>نوع الشبة: {station?.static.general.alum_type}</div>
-                <div>الجرعة: {station?.static.general.alum_dose_gm_m3} جم/م³</div>
-              </div>
-            </div>
-
-            <div className="space-y-2 pt-2 border-t border-slate-800/80">
-              <div className="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center">
-                <div className="text-[10px] text-slate-500">المروقات العاملة</div>
-                <div className="text-base font-extrabold text-teal-400 font-mono">
-                  {specs?.clarifiers?.reduce((sum, c) => sum + (c.count || 0), 0) || 4} مروق
-                </div>
-              </div>
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-slate-400">كوبري الكسح:</span>
-                <span className="text-emerald-400 font-bold">دوران منتظم</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Stage 3: Filters */}
-          <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3 flex flex-col justify-between">
-            <div>
-              <div className="text-xs font-bold text-indigo-400 flex items-center gap-1.5 mb-2">
-                <Activity size={16} />
-                <span>3. المرشحات الرملية</span>
-              </div>
-              <div className="text-[11px] text-slate-400 space-y-1">
-                <div>إجمالي المرشحات: {specs?.filter_groups?.reduce((sum, f) => sum + (f.count || 0), 0) || 16}</div>
-                <div>وسط الترشيح: زلط ورمل</div>
-              </div>
-            </div>
-
-            <div className="space-y-2 pt-2 border-t border-slate-800/80">
-              <div className="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center">
-                <div className="text-[10px] text-slate-500">العكارة المرشحة</div>
-                <div className="text-base font-extrabold text-emerald-400 font-mono">
-                  0.32 <span className="text-xs font-normal">NTU</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-slate-400">الغسيل الدوري:</span>
-                <span className="text-sky-400 font-bold">جاهز</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Stage 4: Chlorine & Tanks */}
-          <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3 flex flex-col justify-between">
-            <div>
-              <div className="text-xs font-bold text-amber-400 flex items-center gap-1.5 mb-2">
-                <Zap size={16} />
-                <span>4. التعقيم والخزانات</span>
-              </div>
-              <div className="text-[11px] text-slate-400 space-y-1">
-                <div>حقن الكلور: {specs?.chlorine_injectors_brand || 'جيسكو'}</div>
-                <div>التأمين: {specs?.chlorine_safety_type || 'برج تعادل'}</div>
-              </div>
-            </div>
-
-            <div className="space-y-2 pt-2 border-t border-slate-800/80">
-              {/* Animated Tank Visual */}
-              <div className="grid grid-cols-2 gap-2 text-center">
-                <div className="bg-slate-950 p-1.5 rounded-lg border border-slate-800">
-                  <div className="text-[9px] text-slate-400">خزان 1</div>
-                  <div className="text-xs font-bold text-sky-300 font-mono">{tank1Level}%</div>
-                  <div className="w-full bg-slate-800 h-1.5 rounded-full mt-1 overflow-hidden">
-                    <div className="bg-sky-500 h-full transition-all" style={{ width: `${tank1Level}%` }} />
-                  </div>
-                </div>
-
-                <div className="bg-slate-950 p-1.5 rounded-lg border border-slate-800">
-                  <div className="text-[9px] text-slate-400">خزان 2</div>
-                  <div className="text-xs font-bold text-sky-300 font-mono">{tank2Level}%</div>
-                  <div className="w-full bg-slate-800 h-1.5 rounded-full mt-1 overflow-hidden">
-                    <div className="bg-sky-500 h-full transition-all" style={{ width: `${tank2Level}%` }} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Stage 5: Clean Water Pumps */}
-          <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3 flex flex-col justify-between">
-            <div>
-              <div className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 mb-2">
-                <Gauge size={16} />
-                <span>5. طلمبات المرشحة والشبكة</span>
-              </div>
-              <div className="text-[11px] text-slate-400 space-y-1">
-                <div>النوع: {specs?.clean_pumps?.type || 'KSB'}</div>
-                <div>الهيد: {specs?.clean_pumps?.head_m || 50} م</div>
-              </div>
-            </div>
-
-            <div className="space-y-2 pt-2 border-t border-slate-800/80">
-              <div className="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center">
-                <div className="text-[10px] text-slate-500">ضغط الشبكة الرئيسي</div>
-                <div className="text-base font-extrabold text-emerald-400 font-mono">
-                  {networkPressure} <span className="text-xs font-normal">بار</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-slate-400">الكلور المتبقي:</span>
-                <span className="text-amber-300 font-bold">{chlorinePpm} PPM</span>
-              </div>
+          <div className="text-center">
+            <div className="text-[10px] text-slate-500 uppercase tracking-wider">DATE</div>
+            <div className="text-blue-400 font-bold text-sm bg-blue-900/30 px-3 py-1 rounded border border-blue-500/30">
+              {now.toLocaleDateString('ar-EG')}
             </div>
           </div>
         </div>
+        <div className="text-center">
+          <div className="text-[10px] text-slate-500 uppercase">معدل التدفق التقديري الكلي</div>
+          <div className="text-cyan-400 font-bold text-lg">{totalNow.toLocaleString('ar-EG', {maximumFractionDigits:1})} م³/ساعة</div>
+        </div>
+      </div>
+
+      {/* Lines Table — مطابق لشاشة الجيزة */}
+      <div className="bg-[#0a0e1a] border border-[#1e3a5f] rounded-xl overflow-hidden">
+        <table className="w-full text-sm border-collapse">
+          <thead>
+            <tr className="bg-[#0d1b35] border-b border-slate-700">
+              <th className="p-3 text-slate-400 text-right font-semibold">الخط / LINE</th>
+              <th className="p-3 text-slate-400 text-center font-semibold">
+                <div className="flex items-center justify-center gap-1"><Gauge className="w-3 h-3"/> PRESSURE (BAR)</div>
+              </th>
+              <th className="p-3 text-slate-400 text-center font-semibold">
+                <div className="flex items-center justify-center gap-1"><Droplets className="w-3 h-3"/> FLOW (M³/HR)</div>
+              </th>
+              <th className="p-3 text-slate-400 text-center font-semibold">TOTAL FLOW (M³)</th>
+              <th className="p-3 text-slate-400 text-center font-semibold">LAST DAY (M³/DAY)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {lines.map((line, i) => (
+              <tr key={i} className="border-b border-slate-800 hover:bg-slate-900/40 transition-colors">
+                {/* Line Name */}
+                <td className="p-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-8 rounded-full" style={{background: line.color}}/>
+                    <div>
+                      <div className="font-bold" style={{color: line.color}}>{line.nameEn}</div>
+                      <div className="text-slate-500 text-xs">{line.name}</div>
+                    </div>
+                  </div>
+                </td>
+                {/* Pressure */}
+                <td className="p-3 text-center">
+                  {line.pressure != null ? (
+                    <div className="flex flex-col items-center">
+                      <div className="text-yellow-300 font-bold text-lg">{line.pressure.toFixed(2)}</div>
+                      <div className="text-slate-500 text-[10px]">BAR</div>
+                      {/* Mini gauge bar */}
+                      <div className="w-20 h-1.5 bg-slate-800 rounded-full mt-1">
+                        <div className="h-full rounded-full bg-yellow-400 transition-all duration-1000"
+                          style={{width: `${Math.min(100, (line.pressure / 6) * 100)}%`}}/>
+                      </div>
+                    </div>
+                  ) : (
+                    <span className="text-slate-600 text-xs">—</span>
+                  )}
+                </td>
+                {/* Flow */}
+                <td className="p-3 text-center">
+                  <div className="flex flex-col items-center">
+                    <div className="font-bold text-lg" style={{color: line.color}}>{line.flow.toLocaleString('en', {maximumFractionDigits:2})}</div>
+                    <div className="text-slate-500 text-[10px]">M³/HR</div>
+                    {/* Flow bar */}
+                    <div className="w-24 h-1.5 bg-slate-800 rounded-full mt-1">
+                      <div className="h-full rounded-full transition-all duration-1000"
+                        style={{width: `${Math.min(100, (line.flow / 5000) * 100)}%`, background: line.color}}/>
+                    </div>
+                  </div>
+                </td>
+                {/* Total Flow */}
+                <td className="p-3 text-center">
+                  <div className="text-white font-bold">{line.totalFlow.toLocaleString('en', {maximumFractionDigits:2})}</div>
+                  <div className="text-slate-500 text-[10px]">M³</div>
+                </td>
+                {/* Last Day */}
+                <td className="p-3 text-center">
+                  <div className="text-emerald-400 font-bold">{line.lastDayFlow.toLocaleString('en', {maximumFractionDigits:2})}</div>
+                  <div className="text-slate-500 text-[10px]">M³/DAY</div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+          {/* Totals Row */}
+          <tfoot>
+            <tr className="bg-[#0d1b35] border-t border-slate-600">
+              <td className="p-3 text-slate-300 font-bold">TOTAL</td>
+              <td className="p-3 text-center text-slate-500 text-xs">—</td>
+              <td className="p-3 text-center">
+                <div className="text-cyan-400 font-bold">{totalNow.toLocaleString('en', {maximumFractionDigits:2})}</div>
+                <div className="text-slate-500 text-[10px]">M³/HR</div>
+              </td>
+              <td className="p-3 text-center">
+                <div className="text-white font-bold">{totalM3.toLocaleString('en', {maximumFractionDigits:2})}</div>
+                <div className="text-slate-500 text-[10px]">M³</div>
+              </td>
+              <td className="p-3 text-center">
+                <div className="text-emerald-400 font-bold">{totalLast.toLocaleString('en', {maximumFractionDigits:2})}</div>
+                <div className="text-slate-500 text-[10px]">M³/DAY</div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      {/* Quick Nav — FT&PT / PUMPS / LEVEL 1 / LEVEL 2 / ALARMS مثل الشاشة الأصلية */}
+      <div className="grid grid-cols-5 gap-3">
+        {[
+          { label:'FT & PT', sub:'Flow & Pressure', icon:'📊', active:true },
+          { label:'PUMPS',   sub:'الطلمبات',        icon:'⚡', active:false },
+          { label:'LEVEL 1', sub:'خزان 1',           icon:'🏗', active:false },
+          { label:'LEVEL 2', sub:'خزان 2',           icon:'🏗', active:false },
+          { label:'ALARMS',  sub:'التنبيهات',        icon:'🔔', active:false },
+        ].map(btn => (
+          <div key={btn.label}
+            className={`rounded-xl p-3 text-center cursor-pointer border transition-all ${btn.active ? 'bg-sky-500/20 border-sky-500/40 text-sky-300' : 'bg-slate-800/40 border-slate-700 text-slate-400 hover:border-slate-500'}`}
+          >
+            <div className="text-2xl mb-1">{btn.icon}</div>
+            <div className="font-bold text-sm">{btn.label}</div>
+            <div className="text-[10px] opacity-70">{btn.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Status note */}
+      <div className="flex items-center gap-2 text-xs text-slate-500 text-center justify-center">
+        <AlertCircle className="w-3 h-3"/>
+        البيانات محاكاة لحظية — للربط الفعلي بـ SCADA يلزم API اتصال مباشر
       </div>
     </div>
   );
