@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { appStore } from '../../store/appStore';
-import { Droplets, Shield, User, Lock, ArrowLeft, Building2, KeyRound } from 'lucide-react';
+import { Droplets, ArrowLeft, Building2, ClipboardEdit, ShieldCheck, Gauge, Zap, FileSpreadsheet } from 'lucide-react';
 
 export const LoginScreen: React.FC = () => {
-  const [username, setUsername] = useState<string>('admin');
+  const [username, setUsername] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -20,110 +20,159 @@ export const LoginScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-center items-center p-4 relative overflow-hidden select-none">
-      {/* Background Subtle Wave Accents */}
-      <div className="absolute -top-40 -right-40 w-96 h-96 bg-sky-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-teal-600/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 select-none dir-rtl font-sans" dir="rtl">
+      <div className="max-w-6xl w-full bg-[#0f172a] rounded-[2rem] overflow-hidden shadow-2xl flex flex-col lg:flex-row relative">
+        
+        {/* Decorative background glows for the right panel */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-sky-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-teal-600/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-md w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6 relative z-10 backdrop-blur-md">
-        {/* Logo & Header */}
-        <div className="text-center space-y-2">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sky-500 via-teal-500 to-emerald-400 flex items-center justify-center text-white mx-auto shadow-lg shadow-sky-900/50">
-            <Droplets className="w-9 h-9 animate-pulse" />
+        {/* Left Column (Login Form) - Displayed as right visually in RTL */}
+        <div className="w-full lg:w-[450px] bg-white p-10 flex flex-col relative z-10 shrink-0">
+          <div className="mb-10">
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">تسجيل الدخول</h1>
+            <p className="text-xs text-slate-500 mt-2 font-medium">أي كلمة مرور مقبولة في البيئة التجريبية</p>
           </div>
-          <h1 className="text-xl font-black text-white tracking-tight mt-2">
-            مركز بيانات محطات مياه الشرب
-          </h1>
-          <p className="text-xs text-sky-400 font-medium">
-            شركة مياه الشرب والصرف الصحي بالجيزة
-          </p>
-        </div>
 
-        {error && (
-          <div className="p-3 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold rounded-xl text-center">
-            {error}
-          </div>
-        )}
+          {error && (
+            <div className="mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold rounded-xl text-center">
+              {error}
+            </div>
+          )}
 
-        {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-xs font-bold text-slate-400 mb-1.5">
-              اسم المستخدم (Username)
-            </label>
-            <div className="relative">
-              <User className="w-4 h-4 text-slate-500 absolute right-3.5 top-3" />
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-2">اسم المستخدم</label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="أدخل اسم المستخدم..."
-                className="w-full pr-10 pl-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono font-bold text-white outline-none focus:border-sky-500 transition-colors"
+                placeholder="username"
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono text-slate-900 outline-none focus:border-slate-400 focus:bg-white transition-colors"
               />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3.5 bg-slate-400 hover:bg-slate-500 text-white font-bold text-sm rounded-xl transition-all flex items-center justify-center gap-2"
+            >
+              <span>تسجيل الدخول</span>
+              <ArrowLeft size={16} />
+            </button>
+          </form>
+
+          <div className="mt-10">
+            <div className="text-xs font-bold text-slate-500 mb-4">حسابات تجريبية:</div>
+            
+            <div className="space-y-3">
+              <button onClick={() => handleQuickLogin('admin')} className="w-full p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-100 flex items-center justify-between group transition-all text-right">
+                <div className="flex gap-4 items-center">
+                  <span className="w-20 text-[10px] font-mono text-slate-400 bg-white px-2 py-1 rounded-md border border-slate-200 text-center">admin</span>
+                  <div>
+                    <div className="text-xs font-bold text-slate-800">الإدارة المركزية</div>
+                    <div className="text-[10px] text-slate-500">كل المحطات + إدخال البيانات</div>
+                  </div>
+                </div>
+              </button>
+
+              <button onClick={() => handleQuickLogin('giza_mgr')} className="w-full p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-100 flex items-center justify-between group transition-all text-right">
+                <div className="flex gap-4 items-center">
+                  <span className="w-20 text-[10px] font-mono text-slate-400 bg-white px-2 py-1 rounded-md border border-slate-200 text-center">giza_mgr</span>
+                  <div>
+                    <div className="text-xs font-bold text-slate-800">مدير محطة الجيزة</div>
+                    <div className="text-[10px] text-slate-500">بيانات ثابتة (4 تبويبات) + سجلات</div>
+                  </div>
+                </div>
+              </button>
+
+              <button onClick={() => handleQuickLogin('sally')} className="w-full p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-100 flex items-center justify-between group transition-all text-right">
+                <div className="flex gap-4 items-center">
+                  <span className="w-20 text-[10px] font-mono text-slate-400 bg-white px-2 py-1 rounded-md border border-slate-200 text-center">sally</span>
+                  <div>
+                    <div className="text-xs font-bold text-slate-800">سالي — محطة الجيزة</div>
+                    <div className="text-[10px] text-slate-500">مسؤول محطة</div>
+                  </div>
+                </div>
+              </button>
+
+              <button onClick={() => handleQuickLogin('imbaba_mgr')} className="w-full p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-100 flex items-center justify-between group transition-all text-right">
+                <div className="flex gap-4 items-center">
+                  <span className="w-20 text-[10px] font-mono text-slate-400 bg-white px-2 py-1 rounded-md border border-slate-200 text-center">imbaba_mgr</span>
+                  <div>
+                    <div className="text-xs font-bold text-slate-800">مدير محطة إمبابة</div>
+                    <div className="text-[10px] text-slate-500">بيانات ثابتة + سجلات</div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column (Features) - Displayed as left visually in RTL */}
+        <div className="flex-1 p-10 flex flex-col relative z-10 justify-center">
+          <div className="flex items-center justify-between mb-10 text-white border-b border-slate-800 pb-8">
+            <div className="text-right">
+              <h1 className="text-2xl font-black text-white">مركز إدارة بيانات محطات المياه</h1>
+              <p className="text-xs text-slate-400 mt-2">الشركة القابضة لمياه الشرب والصرف الصحي</p>
+            </div>
+            <div className="w-16 h-16 rounded-2xl bg-teal-500 flex items-center justify-center text-[#0f172a] shadow-lg shadow-teal-500/20">
+              <Droplets className="w-8 h-8" strokeWidth={2} />
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full py-3 bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer"
-          >
-            تسجيل الدخول للمنظومة
-          </button>
-        </form>
-
-        {/* Demo Quick Accounts */}
-        <div className="border-t border-slate-800 pt-5 space-y-2.5">
-          <div className="text-[11px] font-bold text-slate-400 text-center uppercase tracking-wider flex items-center justify-center gap-1">
-            <KeyRound size={12} className="text-sky-400" />
-            <span>تسجيل دخول سريع بحسابات الديمو المجهزة:</span>
-          </div>
-
-          <div className="grid grid-cols-1 gap-2">
-            <button
-              onClick={() => handleQuickLogin('admin')}
-              className="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 text-right flex items-center justify-between group transition-colors"
-            >
-              <div>
-                <div className="text-xs font-bold text-slate-200">الإدارة المركزية (Central Admin)</div>
-                <div className="text-[10px] text-sky-400">اسم المستخدم: admin</div>
+          <div className="space-y-3">
+            <div className="p-4 rounded-xl border border-slate-700/50 bg-slate-800/30 flex items-center justify-between hover:bg-slate-800/50 transition-colors">
+              <div className="text-right">
+                <div className="text-sm font-bold text-white mb-1">إدارة مركزية</div>
+                <div className="text-xs text-slate-400">نظرة شاملة على جميع المحطات والمقارنة</div>
               </div>
-              <ArrowLeft size={14} className="text-slate-500 group-hover:text-sky-400 group-hover:-translate-x-1 transition-transform" />
-            </button>
+              <Building2 className="w-6 h-6 text-slate-400" />
+            </div>
 
-            <button
-              onClick={() => handleQuickLogin('giza_mgr')}
-              className="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 text-right flex items-center justify-between group transition-colors"
-            >
-              <div>
-                <div className="text-xs font-bold text-slate-200">مدير محطة مياه الجيزة</div>
-                <div className="text-[10px] text-teal-400">اسم المستخدم: giza_mgr</div>
+            <div className="p-4 rounded-xl border border-slate-700/50 bg-slate-800/30 flex items-center justify-between hover:bg-slate-800/50 transition-colors">
+              <div className="text-right">
+                <div className="text-sm font-bold text-white mb-1">إدخال يومي</div>
+                <div className="text-xs text-slate-400">نموذج مطابق لـ gcww.com.eg/psd/DailyEntries</div>
               </div>
-              <ArrowLeft size={14} className="text-slate-500 group-hover:text-teal-400 group-hover:-translate-x-1 transition-transform" />
-            </button>
+              <ClipboardEdit className="w-6 h-6 text-slate-400" />
+            </div>
 
-            <button
-              onClick={() => handleQuickLogin('sally')}
-              className="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 text-right flex items-center justify-between group transition-colors"
-            >
-              <div>
-                <div className="text-xs font-bold text-slate-200">مهندسة محطة الجيزة (سالي إبراهيم)</div>
-                <div className="text-[10px] text-indigo-400">اسم المستخدم: sally</div>
+            <div className="p-4 rounded-xl border border-slate-700/50 bg-slate-800/30 flex items-center justify-between hover:bg-slate-800/50 transition-colors">
+              <div className="text-right">
+                <div className="text-sm font-bold text-white mb-1">ملف فني كامل</div>
+                <div className="text-xs text-slate-400">4 تبويبات: عام، أهداف، منظومات فنية، نطاق الخدمة</div>
               </div>
-              <ArrowLeft size={14} className="text-slate-500 group-hover:text-indigo-400 group-hover:-translate-x-1 transition-transform" />
-            </button>
+              <ShieldCheck className="w-6 h-6 text-slate-400" />
+            </div>
 
-            <button
-              onClick={() => handleQuickLogin('cost_acct')}
-              className="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 text-right flex items-center justify-between group transition-colors"
-            >
-              <div>
-                <div className="text-xs font-bold text-slate-200">محاسب الكيماويات والتكاليف</div>
-                <div className="text-[10px] text-amber-400">اسم المستخدم: cost_acct</div>
+            <div className="p-4 rounded-xl border border-slate-700/50 bg-slate-800/30 flex items-center justify-between hover:bg-slate-800/50 transition-colors">
+              <div className="text-right">
+                <div className="text-sm font-bold text-white mb-1">تقرير الكيماويات</div>
+                <div className="text-xs text-slate-400">مطابق لـ Reports/Chemicals بفلتر القطاع</div>
               </div>
-              <ArrowLeft size={14} className="text-slate-500 group-hover:text-amber-400 group-hover:-translate-x-1 transition-transform" />
-            </button>
+              <FileSpreadsheet className="w-6 h-6 text-slate-400" />
+            </div>
+
+            <div className="p-4 rounded-xl border border-slate-700/50 bg-slate-800/30 flex items-center justify-between hover:bg-slate-800/50 transition-colors">
+              <div className="text-right">
+                <div className="text-sm font-bold text-white mb-1">مراقبة المعايير</div>
+                <div className="text-xs text-slate-400">تنبيه فوري عند الخروج عن الكفاءة أو الكهرباء</div>
+              </div>
+              <Gauge className="w-6 h-6 text-rose-400" />
+            </div>
+
+            <div className="p-4 rounded-xl border border-sky-900/60 bg-sky-900/20 flex items-center justify-between mt-6 hover:bg-sky-900/30 transition-colors">
+              <div className="text-right flex items-center gap-3">
+                <Zap className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+                <div>
+                  <span className="text-sm font-bold text-sky-100">129 سجل حقيقي لمحطة الجيزة (يناير-مايو 2026) </span>
+                  <span className="text-xs text-sky-300 block mt-1">بيانات PDF المرفوع مُحدّثة في النظام</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   );

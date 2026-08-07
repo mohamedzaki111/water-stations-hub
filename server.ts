@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
 import { initDb } from './src/db/database.js';
 import { apiRouter } from './src/db/api.js';
+import morgan from 'morgan';
+import { logger } from './src/utils/logger.js';
 
 dotenv.config();
 
@@ -20,6 +22,11 @@ async function startServer() {
 
   app.use(express.json({ limit: '10mb' }));
 
+  // HTTP request logging using morgan and winston
+  app.use(morgan('combined', {
+    stream: { write: (message) => logger.info(message.trim()) }
+  }));
+
   // API routes
   app.use('/api', apiRouter);
 
@@ -32,14 +39,14 @@ async function startServer() {
   }
 
   app.listen(PORT, () => {
-    console.log(`\n💧 Water Stations Hub`);
-    console.log(`🚀 Server:   http://localhost:${PORT}`);
-    console.log(`📡 API:      http://localhost:${PORT}/api/health`);
-    console.log(`🗄️  Database: MySQL → ${process.env.DB_NAME || 'water_stations'}@${process.env.DB_HOST || 'localhost'}\n`);
+    logger.info(`\n💧 Water Stations Hub`);
+    logger.info(`🚀 Server:   http://localhost:${PORT}`);
+    logger.info(`📡 API:      http://localhost:${PORT}/api/health`);
+    logger.info(`🗄️  Database: MySQL → ${process.env.DB_NAME || 'water_stations'}@${process.env.DB_HOST || 'localhost'}\n`);
   });
 }
 
 startServer().catch(err => {
-  console.error('❌ Server failed to start:', err);
+  logger.error('❌ Server failed to start:', err);
   process.exit(1);
 });

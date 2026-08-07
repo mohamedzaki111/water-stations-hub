@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { appStore } from '../../store/appStore';
-import { PenTool, CheckCircle, AlertCircle, Save, Calculator, Zap, Droplets, FlaskConical, Users } from 'lucide-react';
+import { PenTool, CheckCircle, AlertCircle, Save, Zap, Droplets, FlaskConical, Gauge, ClipboardList, Activity } from 'lucide-react';
 
 export const DailyDataEntry: React.FC = () => {
   const session = appStore.session;
@@ -12,10 +12,35 @@ export const DailyDataEntry: React.FC = () => {
 
   const [producedM3, setProducedM3] = useState<string>('140000');
   const [turbidM3, setTurbidM3] = useState<string>('152000');
+  const [backwashM3, setBackwashM3] = useState<string>('');
+  const [coolingM3, setCoolingM3] = useState<string>('');
+  const [nileLevel, setNileLevel] = useState<string>('');
+
+  const [tank1High, setTank1High] = useState<string>('');
+  const [tank1Low, setTank1Low] = useState<string>('');
+  const [tank2High, setTank2High] = useState<string>('');
+  const [tank2Low, setTank2Low] = useState<string>('');
+
+  const [well1High, setWell1High] = useState<string>('');
+  const [well1Low, setWell1Low] = useState<string>('');
+  const [well2High, setWell2High] = useState<string>('');
+  const [well2Low, setWell2Low] = useState<string>('');
+
+  const [pressureHigh, setPressureHigh] = useState<string>('');
+  const [pressureLow, setPressureLow] = useState<string>('');
+
+  const [alumSolid, setAlumSolid] = useState<string>('');
   const [alumLiquid, setAlumLiquid] = useState<string>('7.85');
   const [chlorineGas, setChlorineGas] = useState<string>('1.25');
+  const [hypochlorite, setHypochlorite] = useState<string>('');
+
   const [electricityKwh, setElectricityKwh] = useState<string>('34500');
   const [electricityKvar, setElectricityKvar] = useState<string>('16500');
+
+  const [maintPeriodic, setMaintPeriodic] = useState<string>('');
+  const [maintRepair, setMaintRepair] = useState<string>('');
+  
+  const [notes, setNotes] = useState<string>('');
   const [flowMetersOk, setFlowMetersOk] = useState<boolean>(true);
   const [shiftCrew, setShiftCrew] = useState<string>('م عماد مراد + حماده مصطفى');
 
@@ -36,7 +61,7 @@ export const DailyDataEntry: React.FC = () => {
   const alumDoseGmM3 = prodNum > 0 ? +((alumNum * 1000000) / prodNum).toFixed(2) : 0; // grams/m³
   const chlorineDoseGmM3 = prodNum > 0 ? +((clNum * 1000000) / prodNum).toFixed(2) : 0;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
 
@@ -50,18 +75,35 @@ export const DailyDataEntry: React.FC = () => {
       return;
     }
 
-    const res = appStore.addRecord({
+    const res = await appStore.addRecord({
       station_id: stationId,
       date,
       produced_m3: prodNum,
       turbid_m3: turbNum,
+      backwash_m3: Number(backwashM3) || undefined,
+      cooling_m3: Number(coolingM3) || undefined,
+      nile_level: Number(nileLevel) || undefined,
+      tank1_high: Number(tank1High) || undefined,
+      tank1_low: Number(tank1Low) || undefined,
+      tank2_high: Number(tank2High) || undefined,
+      tank2_low: Number(tank2Low) || undefined,
+      well1_high: Number(well1High) || undefined,
+      well1_low: Number(well1Low) || undefined,
+      well2_high: Number(well2High) || undefined,
+      well2_low: Number(well2Low) || undefined,
+      pressure_high: Number(pressureHigh) || undefined,
+      pressure_low: Number(pressureLow) || undefined,
+      alum_solid: Number(alumSolid) || undefined,
       alum_liquid: alumNum,
       chlorine_gas: clNum,
+      hypochlorite: Number(hypochlorite) || undefined,
       electricity_kwh: kwhNum,
       electricity_kvar: kvarNum,
+      maintenance_periodic: Number(maintPeriodic) || undefined,
+      maintenance_repair: Number(maintRepair) || undefined,
       flow_meters_ok: flowMetersOk,
       shift_crew: shiftCrew,
-      created_by: session?.user.id || 'u0',
+      notes: notes || undefined,
     });
 
     if (res.ok) {
@@ -82,7 +124,7 @@ export const DailyDataEntry: React.FC = () => {
             <span>إدخال البيانات التشغيلية اليومية</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            تسجيل إنتاج المياه والعكارة واستهلاكات الكيماويات والكهرباء ورديات التشغيل
+            تسجيل إنتاج المياه والعكارة واستهلاكات الكيماويات والكهرباء والمناسيب والضغوط
           </p>
         </div>
       </div>
@@ -103,8 +145,9 @@ export const DailyDataEntry: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Info */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-            المحطة والتاريخ والوردية
+          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+            <ClipboardList size={16} />
+            <span>المحطة والتاريخ والوردية</span>
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -154,7 +197,7 @@ export const DailyDataEntry: React.FC = () => {
             <span>كميات المياه والكفاءة الهيدروليكية</span>
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 المياه المنتجة المرشحة (م³/يوم)
@@ -166,15 +209,48 @@ export const DailyDataEntry: React.FC = () => {
                 className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-sky-500"
               />
             </div>
-
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                المياه العكرة المسحوبة من المأخذ (م³/يوم)
+                المياه العكرة (م³/يوم)
               </label>
               <input
                 type="number"
                 value={turbidM3}
                 onChange={(e) => setTurbidM3(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-sky-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                منسوب النيل
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={nileLevel}
+                onChange={(e) => setNileLevel(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-sky-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                مياه غسيل المرشحات (م³/يوم)
+              </label>
+              <input
+                type="number"
+                value={backwashM3}
+                onChange={(e) => setBackwashM3(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-sky-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                مياه تبريد الطلمبات (م³/يوم)
+              </label>
+              <input
+                type="number"
+                value={coolingM3}
+                onChange={(e) => setCoolingM3(e.target.value)}
                 className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-sky-500"
               />
             </div>
@@ -188,6 +264,52 @@ export const DailyDataEntry: React.FC = () => {
           </div>
         </div>
 
+        {/* Levels and Pressures */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <h2 className="text-xs font-bold text-indigo-600 uppercase tracking-wider flex items-center gap-1.5">
+            <Gauge size={16} />
+            <span>المناسيب والضغوط (حد أقصى / حد أدنى)</span>
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <label className="block text-xs font-bold text-slate-700 mb-2">الخزان 1</label>
+              <div className="flex gap-2">
+                <input type="number" step="0.1" placeholder="أعلى" value={tank1High} onChange={(e) => setTank1High(e.target.value)} className="w-1/2 px-2 py-1.5 border border-slate-300 rounded-lg text-xs font-mono text-center outline-none focus:border-indigo-500" />
+                <input type="number" step="0.1" placeholder="أقل" value={tank1Low} onChange={(e) => setTank1Low(e.target.value)} className="w-1/2 px-2 py-1.5 border border-slate-300 rounded-lg text-xs font-mono text-center outline-none focus:border-indigo-500" />
+              </div>
+            </div>
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <label className="block text-xs font-bold text-slate-700 mb-2">الخزان 2</label>
+              <div className="flex gap-2">
+                <input type="number" step="0.1" placeholder="أعلى" value={tank2High} onChange={(e) => setTank2High(e.target.value)} className="w-1/2 px-2 py-1.5 border border-slate-300 rounded-lg text-xs font-mono text-center outline-none focus:border-indigo-500" />
+                <input type="number" step="0.1" placeholder="أقل" value={tank2Low} onChange={(e) => setTank2Low(e.target.value)} className="w-1/2 px-2 py-1.5 border border-slate-300 rounded-lg text-xs font-mono text-center outline-none focus:border-indigo-500" />
+              </div>
+            </div>
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <label className="block text-xs font-bold text-slate-700 mb-2">بيارة مرشحة 1</label>
+              <div className="flex gap-2">
+                <input type="number" step="0.1" placeholder="أعلى" value={well1High} onChange={(e) => setWell1High(e.target.value)} className="w-1/2 px-2 py-1.5 border border-slate-300 rounded-lg text-xs font-mono text-center outline-none focus:border-indigo-500" />
+                <input type="number" step="0.1" placeholder="أقل" value={well1Low} onChange={(e) => setWell1Low(e.target.value)} className="w-1/2 px-2 py-1.5 border border-slate-300 rounded-lg text-xs font-mono text-center outline-none focus:border-indigo-500" />
+              </div>
+            </div>
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <label className="block text-xs font-bold text-slate-700 mb-2">بيارة مرشحة 2</label>
+              <div className="flex gap-2">
+                <input type="number" step="0.1" placeholder="أعلى" value={well2High} onChange={(e) => setWell2High(e.target.value)} className="w-1/2 px-2 py-1.5 border border-slate-300 rounded-lg text-xs font-mono text-center outline-none focus:border-indigo-500" />
+                <input type="number" step="0.1" placeholder="أقل" value={well2Low} onChange={(e) => setWell2Low(e.target.value)} className="w-1/2 px-2 py-1.5 border border-slate-300 rounded-lg text-xs font-mono text-center outline-none focus:border-indigo-500" />
+              </div>
+            </div>
+            <div className="p-3 bg-indigo-50/50 rounded-xl border border-indigo-200 lg:col-span-2">
+              <label className="block text-xs font-bold text-indigo-900 mb-2">الضغوط (بار)</label>
+              <div className="flex gap-2">
+                <input type="number" step="0.1" placeholder="الضغط الأعلى" value={pressureHigh} onChange={(e) => setPressureHigh(e.target.value)} className="w-1/2 px-2 py-1.5 border border-indigo-300 rounded-lg text-xs font-mono text-center outline-none focus:border-indigo-500" />
+                <input type="number" step="0.1" placeholder="الضغط الأقل" value={pressureLow} onChange={(e) => setPressureLow(e.target.value)} className="w-1/2 px-2 py-1.5 border border-indigo-300 rounded-lg text-xs font-mono text-center outline-none focus:border-indigo-500" />
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Chemicals & Electricity */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Chemicals */}
@@ -197,71 +319,79 @@ export const DailyDataEntry: React.FC = () => {
               <span>استهلاك الكيماويات</span>
             </h2>
 
-            <div className="space-y-3">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  الشبة السائلة (طن/يوم)
-                </label>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2">
+                <label className="block text-xs font-bold text-slate-700 mb-1">الشبة السائلة (طن/يوم)</label>
                 <input
                   type="number"
                   step="0.001"
                   value={alumLiquid}
                   onChange={(e) => setAlumLiquid(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-sky-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-teal-500"
                 />
-                <span className="text-[10px] text-slate-400 mt-0.5 block">
-                  الجرعة الفعالة التقديرية: {alumDoseGmM3} جم/م³ (PPM)
-                </span>
+                <span className="text-[10px] text-slate-400 mt-0.5 block">الجرعة: {alumDoseGmM3} جم/م³</span>
               </div>
-
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  غاز الكلور (طن/يوم)
-                </label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">الشبة الصلبة (طن)</label>
+                <input
+                  type="number"
+                  step="0.001"
+                  value={alumSolid}
+                  onChange={(e) => setAlumSolid(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-xs font-bold text-slate-700 mb-1">غاز الكلور (طن/يوم)</label>
                 <input
                   type="number"
                   step="0.001"
                   value={chlorineGas}
                   onChange={(e) => setChlorineGas(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-sky-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-teal-500"
                 />
-                <span className="text-[10px] text-slate-400 mt-0.5 block">
-                  الجرعة الفعالة التقديرية: {chlorineDoseGmM3} جم/م³
-                </span>
+                <span className="text-[10px] text-slate-400 mt-0.5 block">الجرعة: {chlorineDoseGmM3} جم/م³</span>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">هيبوكلوريد (طن)</label>
+                <input
+                  type="number"
+                  step="0.001"
+                  value={hypochlorite}
+                  onChange={(e) => setHypochlorite(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-teal-500"
+                />
               </div>
             </div>
           </div>
 
-          {/* Electricity */}
+          {/* Electricity & Maintenance */}
           <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
             <h2 className="text-xs font-bold text-amber-600 uppercase tracking-wider flex items-center gap-1.5">
               <Zap size={16} />
-              <span>القدرة الكهربائية للطاقة</span>
+              <span>الطاقة والصيانة</span>
             </h2>
 
             <div className="space-y-3">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  الطاقة الفعالة (ك.و.س - kWh)
-                </label>
-                <input
-                  type="number"
-                  value={electricityKwh}
-                  onChange={(e) => setElectricityKwh(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-sky-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  الطاقة غير الفعالة (ك.ف.أ.ر - kvar)
-                </label>
-                <input
-                  type="number"
-                  value={electricityKvar}
-                  onChange={(e) => setElectricityKvar(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-sky-500"
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">الطاقة الفعالة (kWh)</label>
+                  <input
+                    type="number"
+                    value={electricityKwh}
+                    onChange={(e) => setElectricityKwh(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">غير الفعالة (kvar)</label>
+                  <input
+                    type="number"
+                    value={electricityKvar}
+                    onChange={(e) => setElectricityKvar(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
               </div>
 
               <div className="p-3 bg-amber-50 rounded-xl border border-amber-200/80 text-xs space-y-1">
@@ -276,8 +406,41 @@ export const DailyDataEntry: React.FC = () => {
                   <span className="font-mono">{kwhPerM3.toFixed(4)} ك.و/م³</span>
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1"><Activity size={12}/> أوامر شغل دوري</label>
+                  <input
+                    type="number"
+                    value={maintPeriodic}
+                    onChange={(e) => setMaintPeriodic(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1"><AlertCircle size={12}/> أوامر شغل إصلاحي</label>
+                  <input
+                    type="number"
+                    value={maintRepair}
+                    onChange={(e) => setMaintRepair(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+
+        {/* Notes */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
+           <label className="block text-xs font-bold text-slate-700">ملاحظات إضافية (أعطال أو أحداث)</label>
+           <textarea
+             rows={2}
+             value={notes}
+             onChange={(e) => setNotes(e.target.value)}
+             placeholder="أدخل أي ملاحظات على الوردية هنا..."
+             className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm text-slate-900 outline-none focus:ring-2 focus:ring-sky-500"
+           />
         </div>
 
         {/* Verification & Submit */}

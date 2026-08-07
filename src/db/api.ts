@@ -274,6 +274,75 @@ apiRouter.delete('/breakdowns/:id', async (req, res) => {
   } catch (e: any) { res.status(500).json({ error: e.message }); }
 });
 
+// ══════════════════════════════════════════════════════════════
+//  AI CONSULTANT
+// ══════════════════════════════════════════════════════════════
+apiRouter.post('/ai/analyze-station', async (req, res) => {
+  try {
+    const { stationName, date, stats, targets, recentBreakdowns } = req.body;
+    
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({ success: false, error: 'مفتاح GEMINI_API_KEY غير متوفر في الخادم (يرجى إضافته في ملف .env)' });
+    }
+
+    const prompt = `
+أنت مستشار هندسي ذكي متخصص في تشغيل ومراقبة محطات مياه الشرب.
+قم بتحليل بيانات المحطة التالية وقدم تقريراً فنياً مختصراً ومفيداً باللغة العربية.
+استخدم تنسيق Markdown وضع عناوين ورموز تعبيرية مناسبة.
+
+اسم المحطة: ${stationName}
+تاريخ التحليل: ${date}
+
+مؤشرات الأداء:
+- إجمالي الإنتاج: ${stats.total_prod} م3
+- الكفاءة الحالية: ${(stats.avg_eff * 100).toFixed(1)}% (المستهدف: ${((targets?.efficiency_target || 0.9) * 100).toFixed(1)}%)
+- استهلاك الكهرباء النوعي: ${stats.avg_kwh_m3.toFixed(4)} ك.و/م3 (المستهدف: ${targets?.kwh_m3_target || 'غير محدد'})
+- إجمالي الشبة: ${stats.total_alum} طن
+- إجمالي الكلور: ${stats.total_chlorine} طن
+
+الأعطال الأخيرة:
+${recentBreakdowns && recentBreakdowns.length > 0 
+  ? recentBreakdowns.map((b: any) => `- ${b.asset_label} (${b.severity}): ${b.description}`).join('\n') 
+  : 'لا توجد أعطال مسجلة حديثاً'}
+
+المطلوب:
+1. تقييم عام للكفاءة (هل هي ضمن المستهدف؟).
+2. تقييم لاستهلاك الكيماويات والطاقة.
+3. توصيات فورية للتشغيل أو الصيانة بناءً على الأعطال والمؤشرات.
+`;
+
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{ text: prompt }]
+        }]
+      })
+    });
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'خطأ في الاتصال بخدمة Gemini API');
+    }
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    
+    if (!text) {
+      throw new Error('لم يتم استلام استجابة صحيحة من الذكاء الاصطناعي');
+    }
+
+    res.json({ success: true, text });
+
+  } catch (e: any) {
+    console.error('AI Analysis Error:', e);
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
 // Health check
 apiRouter.get('/health', (_req, res) => res.json({ status: 'ok', db: 'mysql', timestamp: new Date().toISOString() }));
 
