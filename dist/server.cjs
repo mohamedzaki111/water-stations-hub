@@ -8281,3 +8281,4 @@ startServer().catch((err) => {
   console.error("Server failed:", err.message);
   process.exit(1);
 });
+//# sourceMappingURL=server.cjs.map

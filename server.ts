@@ -9,12 +9,12 @@ import { logger } from './src/utils/logger.js';
 dotenv.config();
 
 // CJS-safe __dirname (works in both ESM and compiled CJS)
-const __dirname = typeof __dirname !== 'undefined'
+const dirName = typeof __dirname !== 'undefined'
   ? __dirname
-  : path.dirname(process.argv[1]);
+  : path.dirname(process.argv[1] || process.cwd());
 
 const isBundle = process.argv[1]?.endsWith('server.cjs') ?? false;
-const STATIC   = isBundle ? __dirname : path.join(__dirname, 'dist');
+const STATIC   = isBundle ? dirName : path.join(dirName, 'dist');
 const isDev    = process.env.NODE_ENV !== 'production' && !isBundle;
 
 async function startServer() {
