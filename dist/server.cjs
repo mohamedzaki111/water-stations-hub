@@ -26,7 +26,6 @@ var import_express2 = __toESM(require("express"), 1);
 var import_path = __toESM(require("path"), 1);
 var import_url = require("url");
 var import_dotenv = __toESM(require("dotenv"), 1);
-var import_vite = require("vite");
 
 // src/db/database.ts
 var import_promise = __toESM(require("mysql2/promise"), 1);
@@ -8250,39 +8249,38 @@ var import_meta = {};
 import_dotenv.default.config();
 var __filename = (0, import_url.fileURLToPath)(import_meta.url);
 var __dirname = import_path.default.dirname(__filename);
-var isCompiledBundle = __filename.endsWith("server.cjs");
-var STATIC_DIR = isCompiledBundle ? __dirname : import_path.default.join(__dirname, "dist");
+var isBundle = __filename.endsWith("server.cjs");
+var STATIC = isBundle ? __dirname : import_path.default.join(__dirname, "dist");
+var isDev = process.env.NODE_ENV !== "production" && !isBundle;
 async function startServer() {
   await initDb();
   const app = (0, import_express2.default)();
   const PORT = parseInt(process.env.PORT || "3000");
-  const isDev = process.env.NODE_ENV !== "production";
   app.use(import_express2.default.json({ limit: "10mb" }));
   app.use("/api", apiRouter);
-  if (isDev && !isCompiledBundle) {
-    const vite = await (0, import_vite.createServer)({
+  if (isDev) {
+    const { createServer: createViteServer } = await import("vite");
+    const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa"
     });
     app.use(vite.middlewares);
   } else {
-    app.use(import_express2.default.static(STATIC_DIR));
+    app.use(import_express2.default.static(STATIC));
     app.get("*", (_req, res) => {
-      res.sendFile(import_path.default.join(STATIC_DIR, "index.html"));
+      res.sendFile(import_path.default.join(STATIC, "index.html"));
     });
   }
   app.listen(PORT, () => {
     console.log(`
  Water Stations Hub`);
     console.log(` URL:  http://localhost:${PORT}`);
-    console.log(` API:  http://localhost:${PORT}/api/health`);
-    console.log(` Mode: ${isDev && !isCompiledBundle ? "development" : "production"}`);
-    console.log(` Static: ${STATIC_DIR}
+    console.log(` Mode: ${isDev ? "development (vite)" : "production"}`);
+    console.log(` Static: ${STATIC}
 `);
   });
 }
 startServer().catch((err) => {
-  console.error("Server failed to start:", err);
+  console.error("Server failed:", err.message);
   process.exit(1);
 });
-//# sourceMappingURL=server.cjs.map
