@@ -13,12 +13,11 @@ dotenv.config();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function startServer() {
-  // Initialize MySQL
   await initDb();
 
-  const app    = express();
-  const PORT   = parseInt(process.env.PORT || '3000');
-  const isDev  = process.env.NODE_ENV !== 'production';
+  const app   = express();
+  const PORT  = parseInt(process.env.PORT || '3000');
+  const isDev = process.env.NODE_ENV !== 'production';
 
   app.use(express.json({ limit: '10mb' }));
 
@@ -27,15 +26,22 @@ async function startServer() {
     stream: { write: (message) => logger.info(message.trim()) }
   }));
 
-  // API routes
+  // API routes FIRST — before Vite middleware
   app.use('/api', apiRouter);
 
   if (isDev) {
-    const vite = await createViteServer({ server: { middlewareMode: true }, appType: 'spa' });
+    // Vite handles ALL non-API requests in dev
+    const vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: 'spa',
+    });
     app.use(vite.middlewares);
   } else {
+    // In production, serve built files
     app.use(express.static(path.join(__dirname, 'dist')));
-    app.get('*', (_req, res) => res.sendFile(path.join(__dirname, 'dist', 'index.html')));
+    app.get('*', (_req, res) => {
+      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    });
   }
 
   app.listen(PORT, () => {
