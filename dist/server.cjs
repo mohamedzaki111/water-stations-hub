@@ -8248,7 +8248,10 @@ apiRouter.post("/ai/analyze-station", async (req, res) => {
 // server.ts
 var import_meta = {};
 import_dotenv.default.config();
-var __dirname = import_path.default.dirname((0, import_url.fileURLToPath)(import_meta.url));
+var __filename = (0, import_url.fileURLToPath)(import_meta.url);
+var __dirname = import_path.default.dirname(__filename);
+var isCompiledBundle = __filename.endsWith("server.cjs");
+var STATIC_DIR = isCompiledBundle ? __dirname : import_path.default.join(__dirname, "dist");
 async function startServer() {
   await initDb();
   const app = (0, import_express2.default)();
@@ -8256,24 +8259,25 @@ async function startServer() {
   const isDev = process.env.NODE_ENV !== "production";
   app.use(import_express2.default.json({ limit: "10mb" }));
   app.use("/api", apiRouter);
-  if (isDev) {
+  if (isDev && !isCompiledBundle) {
     const vite = await (0, import_vite.createServer)({
       server: { middlewareMode: true },
       appType: "spa"
     });
     app.use(vite.middlewares);
   } else {
-    app.use(import_express2.default.static(import_path.default.join(__dirname, "dist")));
+    app.use(import_express2.default.static(STATIC_DIR));
     app.get("*", (_req, res) => {
-      res.sendFile(import_path.default.join(__dirname, "dist", "index.html"));
+      res.sendFile(import_path.default.join(STATIC_DIR, "index.html"));
     });
   }
   app.listen(PORT, () => {
     console.log(`
  Water Stations Hub`);
-    console.log(` Server:   http://localhost:${PORT}`);
-    console.log(` API:      http://localhost:${PORT}/api/health`);
-    console.log(` DB:       MySQL -> ${process.env.DB_NAME || "water_stations"}@${process.env.DB_HOST || "localhost"}
+    console.log(` URL:  http://localhost:${PORT}`);
+    console.log(` API:  http://localhost:${PORT}/api/health`);
+    console.log(` Mode: ${isDev && !isCompiledBundle ? "development" : "production"}`);
+    console.log(` Static: ${STATIC_DIR}
 `);
   });
 }

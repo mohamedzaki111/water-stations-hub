@@ -10,7 +10,15 @@ import { logger } from './src/utils/logger.js';
 
 dotenv.config();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname  = path.dirname(__filename);
+
+// When running as dist/server.cjs, static files are in same dist/ folder
+// When running as server.ts (dev), static files are in dist/ subfolder
+const isCompiledBundle = __filename.endsWith('server.cjs');
+const STATIC_DIR = isCompiledBundle
+  ? __dirname                              // dist/server.cjs → serve from dist/
+  : path.join(__dirname, 'dist');          // server.ts → serve from ./dist/
 
 async function startServer() {
   await initDb();
@@ -26,29 +34,30 @@ async function startServer() {
     stream: { write: (message) => logger.info(message.trim()) }
   }));
 
-  // API routes FIRST — before Vite middleware
+  // API routes FIRST
   app.use('/api', apiRouter);
 
-  if (isDev) {
-    // Vite handles ALL non-API requests in dev
+  if (isDev && !isCompiledBundle) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
     });
     app.use(vite.middlewares);
   } else {
-    // In production, serve built files
-    app.use(express.static(path.join(__dirname, 'dist')));
+    // Production: serve from dist/
+    app.use(express.static(STATIC_DIR));
     app.get('*', (_req, res) => {
-      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+      res.sendFile(path.join(STATIC_DIR, 'index.html'));
     });
   }
 
   app.listen(PORT, () => {
     logger.info(`\n💧 Water Stations Hub`);
-    logger.info(`🚀 Server:   http://localhost:${PORT}`);
+    logger.info(`🚀 URL:      http://localhost:${PORT}`);
     logger.info(`📡 API:      http://localhost:${PORT}/api/health`);
-    logger.info(`🗄️  Database: MySQL → ${process.env.DB_NAME || 'water_stations'}@${process.env.DB_HOST || 'localhost'}\n`);
+    logger.info(`🗄️  Mode:     ${isDev && !isCompiledBundle ? 'development' : 'production'}`);
+    logger.info(`📁 Static:   ${STATIC_DIR}`);
+    logger.info(`💾 Database: MySQL → ${process.env.DB_NAME || 'water_stations'}@${process.env.DB_HOST || 'localhost'}\n`);
   });
 }
 
