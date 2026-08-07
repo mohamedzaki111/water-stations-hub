@@ -8,7 +8,15 @@ import { apiRouter } from './src/db/api.js';
 
 dotenv.config();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname  = path.dirname(__filename);
+
+// When running as dist/server.cjs, static files are in same dist/ folder
+// When running as server.ts (dev), static files are in dist/ subfolder
+const isCompiledBundle = __filename.endsWith('server.cjs');
+const STATIC_DIR = isCompiledBundle
+  ? __dirname                              // dist/server.cjs → serve from dist/
+  : path.join(__dirname, 'dist');          // server.ts → serve from ./dist/
 
 async function startServer() {
   await initDb();
@@ -19,29 +27,29 @@ async function startServer() {
 
   app.use(express.json({ limit: '10mb' }));
 
-  // API routes FIRST — before Vite middleware
+  // API routes FIRST
   app.use('/api', apiRouter);
 
-  if (isDev) {
-    // Vite handles ALL non-API requests in dev
+  if (isDev && !isCompiledBundle) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
     });
     app.use(vite.middlewares);
   } else {
-    // In production, serve built files
-    app.use(express.static(path.join(__dirname, 'dist')));
+    // Production: serve from dist/
+    app.use(express.static(STATIC_DIR));
     app.get('*', (_req, res) => {
-      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+      res.sendFile(path.join(STATIC_DIR, 'index.html'));
     });
   }
 
   app.listen(PORT, () => {
     console.log(`\n Water Stations Hub`);
-    console.log(` Server:   http://localhost:${PORT}`);
-    console.log(` API:      http://localhost:${PORT}/api/health`);
-    console.log(` DB:       MySQL -> ${process.env.DB_NAME || 'water_stations'}@${process.env.DB_HOST || 'localhost'}\n`);
+    console.log(` URL:  http://localhost:${PORT}`);
+    console.log(` API:  http://localhost:${PORT}/api/health`);
+    console.log(` Mode: ${isDev && !isCompiledBundle ? 'development' : 'production'}`);
+    console.log(` Static: ${STATIC_DIR}\n`);
   });
 }
 
