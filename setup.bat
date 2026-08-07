@@ -2,9 +2,7 @@
 title Water Stations Hub
 
 echo.
-echo ====================================================
-echo   Water Stations Hub - Local Setup
-echo ====================================================
+echo Water Stations Hub - Local Setup
 echo.
 
 node -v > nul 2>&1
@@ -17,10 +15,9 @@ if errorlevel 1 (
 )
 for /f %%i in ('node -v') do set NV=%%i
 echo OK: Node.js %NV%
-echo.
 
 if not exist ".env" (
-    echo OK: Creating .env
+    echo Creating .env file...
     (
         echo PORT=3000
         echo NODE_ENV=development
@@ -30,45 +27,36 @@ if not exist ".env" (
         echo DB_PASSWORD=
         echo DB_NAME=water_stations
     ) > ".env"
-    echo .env created - edit DB_PASSWORD if needed
+    echo .env created
+    echo Edit DB_PASSWORD if your MySQL has a password
     echo.
+    echo Opening .env in Notepad...
+    notepad .env
+    echo Press any key after saving .env
+    pause > nul
 )
 
-echo Current .env:
-type .env
-echo.
-
-echo Edit .env now? Press Y or N
-choice /c YN /n /m "Choice: "
-if errorlevel 2 goto INSTALL
-notepad .env
-echo Press any key after saving...
-pause > nul
-
-:INSTALL
-echo.
-echo Installing packages...
-call npm install
-if errorlevel 1 (
-    echo ERROR: npm install failed
-    pause
-    exit /b 1
+if not exist "node_modules\" (
+    echo Installing packages, please wait...
+    call npm install
+    if errorlevel 1 (
+        echo ERROR: npm install failed
+        pause
+        exit /b 1
+    )
+    echo Packages installed OK
 )
-echo.
-echo OK: Packages installed
 
-:START
 echo.
-echo ====================================================
-echo   Starting at http://localhost:3000
+echo Starting server at http://localhost:3000
 echo.
-echo   admin      / 123
-echo   giza_mgr   / 123
-echo   sally      / 123
-echo   cost_acct  / 123
+echo  Accounts:
+echo  admin      - 123
+echo  giza_mgr   - 123
+echo  sally      - 123
+echo  cost_acct  - 123
 echo.
-echo   Press Ctrl+C to stop
-echo ====================================================
+echo Press Ctrl+C to stop
 echo.
 
 start /b "" cmd /c "ping -n 6 127.0.0.1 > nul && start http://localhost:3000"
