@@ -23,7 +23,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 
 // server.ts
 var import_express2 = __toESM(require("express"), 1);
-var import_path = __toESM(require("path"), 1);
+var import_path2 = __toESM(require("path"), 1);
 var import_dotenv = __toESM(require("dotenv"), 1);
 
 // src/db/database.ts
@@ -8244,16 +8244,59 @@ apiRouter.post("/ai/analyze-station", async (req, res) => {
 });
 
 // server.ts
+var import_morgan = __toESM(require("morgan"), 1);
+
+// src/utils/logger.ts
+var import_winston = __toESM(require("winston"), 1);
+var import_path = __toESM(require("path"), 1);
+var import_url = require("url");
+var import_meta = {};
+var __filename = (0, import_url.fileURLToPath)(import_meta.url);
+var __dirname2 = import_path.default.dirname(__filename);
+var logDirectory = import_path.default.join(__dirname2, "../../logs");
+var logger = import_winston.default.createLogger({
+  level: "info",
+  format: import_winston.default.format.combine(
+    import_winston.default.format.timestamp({
+      format: "YYYY-MM-DD HH:mm:ss"
+    }),
+    import_winston.default.format.errors({ stack: true }),
+    import_winston.default.format.splat(),
+    import_winston.default.format.json()
+  ),
+  defaultMeta: { service: "water-stations-hub" },
+  transports: [
+    // Write all logs with level `error` and below to `error.log`
+    new import_winston.default.transports.File({ filename: import_path.default.join(logDirectory, "error.log"), level: "error" }),
+    // Write all logs with level `info` and below to `combined.log`
+    new import_winston.default.transports.File({ filename: import_path.default.join(logDirectory, "combined.log") })
+  ]
+});
+if (process.env.NODE_ENV !== "production") {
+  logger.add(new import_winston.default.transports.Console({
+    format: import_winston.default.format.combine(
+      import_winston.default.format.colorize(),
+      import_winston.default.format.printf(({ level, message, timestamp }) => {
+        return `${timestamp} ${level}: ${message}`;
+      })
+    )
+  }));
+}
+
+// server.ts
 import_dotenv.default.config();
-var __dirname = typeof __dirname !== "undefined" ? __dirname : import_path.default.dirname(process.argv[1]);
+var dirName = typeof __dirname !== "undefined" ? __dirname : import_path2.default.dirname(process.argv[1] || process.cwd());
 var isBundle = process.argv[1]?.endsWith("server.cjs") ?? false;
-var STATIC = isBundle ? __dirname : import_path.default.join(__dirname, "dist");
+var STATIC = isBundle ? dirName : import_path2.default.join(dirName, "dist");
 var isDev = process.env.NODE_ENV !== "production" && !isBundle;
 async function startServer() {
   await initDb();
   const app = (0, import_express2.default)();
   const PORT = parseInt(process.env.PORT || "3000");
   app.use(import_express2.default.json({ limit: "10mb" }));
+  app.use((0, import_morgan.default)("combined", {
+    stream: { write: (message) => logger.info(message.trim()) }
+  }));
   app.use("/api", apiRouter);
   if (isDev) {
     const { createServer: createViteServer } = await import("vite");
@@ -8265,20 +8308,22 @@ async function startServer() {
   } else {
     app.use(import_express2.default.static(STATIC));
     app.get("*", (_req, res) => {
-      res.sendFile(import_path.default.join(STATIC, "index.html"));
+      res.sendFile(import_path2.default.join(STATIC, "index.html"));
     });
   }
   app.listen(PORT, () => {
-    console.log(`
- Water Stations Hub running`);
-    console.log(` URL:  http://localhost:${PORT}`);
-    console.log(` Mode: ${isDev ? "development" : "production"}`);
-    console.log(` Static dir: ${STATIC}
+    logger.info(`
+\u{1F4A7} Water Stations Hub`);
+    logger.info(`\u{1F680} URL:      http://localhost:${PORT}`);
+    logger.info(`\u{1F4E1} API:      http://localhost:${PORT}/api/health`);
+    logger.info(`\u{1F5C4}\uFE0F  Mode:     ${isDev ? "development" : "production"}`);
+    logger.info(`\u{1F4C1} Static:   ${STATIC}`);
+    logger.info(`\u{1F4BE} Database: MySQL \u2192 ${process.env.DB_NAME || "water_stations"}@${process.env.DB_HOST || "localhost"}
 `);
   });
 }
 startServer().catch((err) => {
-  console.error("Server failed:", err.message);
+  logger.error("\u274C Server failed to start:", err.message);
   process.exit(1);
 });
 //# sourceMappingURL=server.cjs.map
