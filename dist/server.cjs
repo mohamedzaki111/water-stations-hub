@@ -8257,26 +8257,18 @@ var import_morgan = __toESM(require("morgan"), 1);
 // src/utils/logger.ts
 var import_winston = __toESM(require("winston"), 1);
 var import_path = __toESM(require("path"), 1);
-var import_url = require("url");
-var import_meta = {};
-var __filename = (0, import_url.fileURLToPath)(import_meta.url);
-var __dirname2 = import_path.default.dirname(__filename);
-var logDirectory = import_path.default.join(__dirname2, "../../logs");
+var logDirectory = import_path.default.join(process.cwd(), "logs");
 var logger = import_winston.default.createLogger({
   level: "info",
   format: import_winston.default.format.combine(
-    import_winston.default.format.timestamp({
-      format: "YYYY-MM-DD HH:mm:ss"
-    }),
+    import_winston.default.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     import_winston.default.format.errors({ stack: true }),
     import_winston.default.format.splat(),
     import_winston.default.format.json()
   ),
   defaultMeta: { service: "water-stations-hub" },
   transports: [
-    // Write all logs with level `error` and below to `error.log`
     new import_winston.default.transports.File({ filename: import_path.default.join(logDirectory, "error.log"), level: "error" }),
-    // Write all logs with level `info` and below to `combined.log`
     new import_winston.default.transports.File({ filename: import_path.default.join(logDirectory, "combined.log") })
   ]
 });
