@@ -549,6 +549,14 @@ var initialStations = [
 ];
 var initialUsers = [
   {
+    "id": "u_sys",
+    "username": "sysadmin",
+    "name": "\u0645\u062F\u064A\u0631 \u0627\u0644\u0646\u0638\u0627\u0645",
+    "role": "system_admin",
+    "station_id": null,
+    "active": true
+  },
+  {
     "id": "u0",
     "username": "admin",
     "name": "\u0627\u0644\u0625\u062F\u0627\u0631\u0629 \u0627\u0644\u0645\u0631\u0643\u0632\u064A\u0629",
