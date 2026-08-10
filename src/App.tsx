@@ -17,6 +17,7 @@ import { StationTechnicalProfile } from './components/Stations/StationTechnicalP
 import { StationCompare } from './components/Stations/StationCompare';
 import { StationsManagement } from './components/Stations/StationsManagement';
 import { UsersManagement } from './components/Admin/UsersManagement';
+import { SystemSettings } from './components/Admin/SystemSettings';
 
 import { AiOperationsConsultant } from './components/AiAssistant/AiOperationsConsultant';
 
@@ -67,10 +68,13 @@ export default function App() {
         return { title: 'إدارة الأعطال والتوقفات', subtitle: 'تسجيل الأعطال والتوقفات واستدعاء التشخيص الفني الذكي' };
       case 'central/stations':
         return { title: 'إدارة المحطات وحالات التشغيل', subtitle: 'تنشيط وتغيير حالات المحطات وإضافة محطات جديدة' };
+      case 'central/static':
       case 'station/static':
         return { title: 'الملف الفني والمواصفات الثابتة', subtitle: 'مواصفات المأخذ والمروقات والمرشحات وطلمبات العكرة والمرشحة' };
-      case 'central/users':
+      case 'system/users':
         return { title: 'إدارة المستخدمين والصلاحيات', subtitle: 'إضافة الحسابات وتحديد مستويات الوصول والأدوار' };
+      case 'system/settings':
+        return { title: 'الإعدادات العامة والنسخ الاحتياطي', subtitle: 'تهيئة النظام والنسخ الاحتياطي واستعادة البيانات' };
       default:
         return { title: 'مركز بيانات محطات المياه', subtitle: 'شركة مياه الشرب والصرف الصحي بالجيزة' };
     }
@@ -109,12 +113,15 @@ export default function App() {
         return <BreakdownManager />;
       case 'central/stations':
         return <StationsManagement />;
+      case 'central/static':
       case 'station/static':
         return <StationTechnicalProfile />;
-      case 'central/users':
+      case 'system/users':
         return <UsersManagement />;
+      case 'system/settings':
+        return <SystemSettings />;
       default:
-        return session.isCentral ? <CentralDashboard /> : <StationDashboard />;
+        return session.isSystemAdmin ? <SystemSettings /> : session.isCentral ? <CentralDashboard /> : <StationDashboard />;
     }
   };
 

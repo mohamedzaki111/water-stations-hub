@@ -18,6 +18,7 @@ import {
   RefreshCw,
   Droplets,
   ShieldAlert,
+  Settings,
 } from 'lucide-react';
 
 interface NavItem {
@@ -39,7 +40,7 @@ export const Sidebar: React.FC<{
 
   if (!session) return null;
 
-  const { user, station, isCentral, isAcct } = session;
+  const { user, station, isSystemAdmin, isCentral, isAcct } = session;
   const openBreakdowns = appStore.getBreakdowns().filter((b) => b.status === 'جارٍ').length;
 
   const centralNav: NavItem[] = [
@@ -56,8 +57,14 @@ export const Sidebar: React.FC<{
     { id: 'central/breakdowns', label: 'سجل الأعطال والصيانة', icon: <Wrench size={18} />, badge: openBreakdowns },
     { id: 'central/jartest', label: 'مستشار Jar Test الذكي', icon: <FlaskConical size={18} /> },
     { s: 'الإدارة والتهيئة' },
-    { id: 'central/stations', label: 'إدارة المحطات والملف الفني', icon: <Building2 size={18} /> },
-    { id: 'central/users', label: 'المستخدمون والصلاحيات', icon: <Users size={18} />, role: 'central_admin' },
+    { id: 'central/stations', label: 'إدارة المحطات وحالات التشغيل', icon: <Building2 size={18} /> },
+    { id: 'central/static', label: 'البيانات الثابتة والملف الفني', icon: <Wrench size={18} /> },
+  ];
+
+  const systemNav: NavItem[] = [
+    { s: 'إدارة النظام' },
+    { id: 'system/settings', label: 'الإعدادات العامة والنسخ', icon: <Settings size={18} /> },
+    { id: 'system/users', label: 'المستخدمون والصلاحيات', icon: <Users size={18} /> },
   ];
 
   const stationNav: NavItem[] = [
@@ -81,7 +88,7 @@ export const Sidebar: React.FC<{
     { id: 'acct/chemicals', label: 'تقرير الكيماويات والصيانة', icon: <FlaskConical size={18} /> },
   ];
 
-  const navItems = isCentral ? centralNav : isAcct ? acctNav : stationNav;
+  const navItems = isSystemAdmin ? systemNav : isCentral ? centralNav : isAcct ? acctNav : stationNav;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -106,8 +113,8 @@ export const Sidebar: React.FC<{
     <aside className="w-64 min-w-[256px] bg-slate-900 text-slate-100 flex flex-col h-screen sticky top-0 border-l border-slate-800 z-30 select-none shrink-0">
       {/* Header Logo */}
       <div className="p-5 border-b border-slate-800 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center text-white shadow-sm shrink-0">
-          <Droplets className="w-5 h-5" />
+        <div className="w-10 h-10 rounded-lg bg-white p-1 flex items-center justify-center shadow-md shrink-0">
+          <img src="/logo.svg" alt="Logo" className="w-full h-full object-contain" />
         </div>
         <div className="min-w-0">
           <h1 className="text-base font-bold text-white tracking-tight truncate">
@@ -183,48 +190,6 @@ export const Sidebar: React.FC<{
         })}
       </nav>
 
-      {/* System Actions & Backup */}
-      <div className="p-3 border-t border-slate-800/80 bg-slate-900/50 space-y-1.5">
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => appStore.exportBackupJson()}
-            title="تصدير نسخة احتياطية من كافة البيانات"
-            className="flex-1 py-1.5 px-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium flex items-center justify-center gap-1.5 transition-colors border border-slate-700/60 cursor-pointer"
-          >
-            <Download size={13} />
-            <span>نسخة احتياطية</span>
-          </button>
-
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            title="استعادة بيانات من ملف نسخة احتياطية"
-            className="flex-1 py-1.5 px-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium flex items-center justify-center gap-1.5 transition-colors border border-slate-700/60 cursor-pointer"
-          >
-            <Upload size={13} />
-            <span>استعادة</span>
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json"
-            onChange={handleFileUpload}
-            className="hidden"
-          />
-        </div>
-
-        <button
-          onClick={() => {
-            if (confirm('هل أنت تأكد من إرجاع البيانات الافتراضية؟ سيتم استبدال التعديلات الحالية.')) {
-              appStore.resetToDefaults();
-            }
-          }}
-          className="w-full py-1 px-2 text-[10.5px] text-slate-500 hover:text-slate-400 text-center flex items-center justify-center gap-1 cursor-pointer"
-        >
-          <RefreshCw size={10} />
-          <span>إعادة ضبط البيانات الأصلية</span>
-        </button>
-      </div>
-
       {/* User Footer */}
       <div className="p-4 border-t border-slate-800 bg-slate-950/40 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
@@ -236,7 +201,9 @@ export const Sidebar: React.FC<{
               {user.name}
             </div>
             <div className="text-[11px] text-slate-400 truncate">
-              {user.role === 'central_admin'
+              {user.role === 'system_admin'
+                ? 'مدير نظام'
+                : user.role === 'central_admin'
                 ? 'مدير مركزي'
                 : user.role === 'station_admin'
                 ? 'مسؤول محطة'

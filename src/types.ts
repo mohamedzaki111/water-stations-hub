@@ -1,4 +1,4 @@
-export type UserRole = 'central_admin' | 'station_admin' | 'cost_accountant' | 'viewer';
+export type UserRole = 'system_admin' | 'central_admin' | 'station_admin' | 'cost_accountant' | 'viewer';
 
 export interface User {
   id: string;

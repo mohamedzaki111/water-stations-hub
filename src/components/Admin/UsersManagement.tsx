@@ -76,6 +76,7 @@ export const UsersManagement: React.FC = () => {
             onChange={(e) => setRole(e.target.value as UserRole)}
             className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-bold bg-white"
           >
+            <option value="system_admin">مدير نظام (System Admin)</option>
             <option value="central_admin">إدارة مركزية (Central Admin)</option>
             <option value="station_admin">مدير/مهندس محطة (Station Admin)</option>
             <option value="cost_accountant">محاسب تكاليف (Cost Accountant)</option>
@@ -135,7 +136,9 @@ export const UsersManagement: React.FC = () => {
                     <td className="py-3 px-4 font-bold text-slate-800">{u.name}</td>
                     <td className="py-3 px-4">
                       <span className="text-sky-700 font-bold">
-                        {u.role === 'central_admin'
+                        {u.role === 'system_admin'
+                          ? 'مدير نظام'
+                          : u.role === 'central_admin'
                           ? 'إدارة مركزية'
                           : u.role === 'station_admin'
                           ? 'مدير محطة'

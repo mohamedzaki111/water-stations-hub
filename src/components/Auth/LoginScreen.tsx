@@ -115,8 +115,8 @@ export const LoginScreen: React.FC = () => {
               <h1 className="text-2xl font-black text-white">مركز إدارة بيانات محطات المياه</h1>
               <p className="text-xs text-slate-400 mt-2">الشركة القابضة لمياه الشرب والصرف الصحي</p>
             </div>
-            <div className="w-16 h-16 rounded-2xl bg-teal-500 flex items-center justify-center text-[#0f172a] shadow-lg shadow-teal-500/20">
-              <Droplets className="w-8 h-8" strokeWidth={2} />
+            <div className="w-20 h-20 rounded-2xl bg-white p-2 flex items-center justify-center shadow-lg shadow-teal-500/20">
+              <img src="/logo.svg" alt="Logo" className="w-full h-full object-contain" />
             </div>
           </div>
 

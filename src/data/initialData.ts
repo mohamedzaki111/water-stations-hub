@@ -520,6 +520,14 @@ export const initialStations: Station[] = [
 
 export const initialUsers: User[] = [
   {
+    "id": "u_sys",
+    "username": "sysadmin",
+    "name": "مدير النظام",
+    "role": "system_admin",
+    "station_id": null,
+    "active": true
+  },
+  {
     "id": "u0",
     "username": "admin",
     "name": "الإدارة المركزية",

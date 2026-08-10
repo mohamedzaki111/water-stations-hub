@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { appStore } from '../../store/appStore';
 import { PenTool, CheckCircle, AlertCircle, Save, Zap, Droplets, FlaskConical, Gauge, ClipboardList, Activity } from 'lucide-react';
 
 export const DailyDataEntry: React.FC = () => {
   const session = appStore.session;
   const isCentral = session?.isCentral;
-  const defaultStationId = session?.station?.id || appStore.stations[0]?.id || 'giza';
+  const defaultStationId = session?.station?.id || (appStore.stations.some(s => s.id === 'giza') ? 'giza' : appStore.stations[0]?.id) || 'giza';
 
   const [stationId, setStationId] = useState<string>(defaultStationId);
   const [date, setDate] = useState<string>(new Date().toISOString().slice(0, 10));
@@ -42,9 +42,28 @@ export const DailyDataEntry: React.FC = () => {
   
   const [notes, setNotes] = useState<string>('');
   const [flowMetersOk, setFlowMetersOk] = useState<boolean>(true);
-  const [shiftCrew, setShiftCrew] = useState<string>('م عماد مراد + حماده مصطفى');
+  const [shiftCrew, setShiftCrew] = useState<string>('');
 
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const selectedStation = useMemo(() => appStore.stations.find((s) => s.id === stationId), [stationId]);
+  const shifts = selectedStation?.static?.shifts || [];
+
+  const activeShiftIndex = useMemo(() => {
+    if (shifts.length === 0) return -1;
+    const epoch = new Date('2023-12-31').getTime();
+    const current = new Date(date).getTime();
+    const diffDays = Math.floor((current - epoch) / (1000 * 60 * 60 * 24));
+    return ((diffDays % shifts.length) + shifts.length) % shifts.length;
+  }, [date, shifts]);
+
+  useEffect(() => {
+    if (activeShiftIndex >= 0 && shifts[activeShiftIndex]) {
+      setShiftCrew(shifts[activeShiftIndex].crew);
+    } else {
+      setShiftCrew('');
+    }
+  }, [activeShiftIndex, shifts]);
 
   const prodNum = Number(producedM3) || 0;
   const turbNum = Number(turbidM3) || 0;
@@ -156,7 +175,10 @@ export const DailyDataEntry: React.FC = () => {
               <select
                 disabled={!isCentral}
                 value={stationId}
-                onChange={(e) => setStationId(e.target.value)}
+                onChange={(e) => {
+                  setStationId(e.target.value);
+                  setShiftCrew('');
+                }}
                 className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 bg-white outline-none focus:ring-2 focus:ring-sky-500 disabled:bg-slate-100"
               >
                 {appStore.stations.map((s) => (
@@ -179,13 +201,21 @@ export const DailyDataEntry: React.FC = () => {
 
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">مسؤول الوردية / الطاقم</label>
-              <input
-                type="text"
+              <select
                 value={shiftCrew}
                 onChange={(e) => setShiftCrew(e.target.value)}
-                placeholder="أدخل أسماء الطاقم القائم بالوردية"
-                className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-sky-500"
-              />
+                className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 bg-white outline-none focus:ring-2 focus:ring-sky-500"
+              >
+                <option value="" disabled>اختر الطاقم</option>
+                {shifts.map((shift, index) => {
+                  const isTurn = index === activeShiftIndex;
+                  return (
+                    <option key={shift.id} value={shift.crew}>
+                      {shift.label} - {shift.crew} {isTurn ? '* دورها اليوم' : ''}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
           </div>
         </div>

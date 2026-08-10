@@ -17,7 +17,7 @@ export function calculateStats(records: DailyRecord[]): StationStats {
 
 // ── App State ─────────────────────────────────────────────────
 interface AppState {
-  session: { user: User; station: Station | null; isCentral: boolean; isAcct: boolean } | null;
+  session: { user: User; station: Station | null; isSystemAdmin: boolean; isCentral: boolean; isAcct: boolean } | null;
   stations: Station[];
   users: User[];
   records: DailyRecord[];
@@ -63,10 +63,11 @@ export const store = {
         api.breakdowns.getAll(),
       ]);
       const station = user.station_id ? stations.find((s: Station) => s.id === user.station_id) || null : null;
+      const isSystemAdmin = user.role === 'system_admin';
       const isCentral = user.role === 'central_admin';
       const isAcct    = user.role === 'cost_accountant';
-      const page = isCentral ? 'central/dashboard' : isAcct ? 'acct/overview' : 'station/dashboard';
-      setState({ session: { user, station, isCentral, isAcct }, stations, users, records, breakdowns, page, loading: false });
+      const page = isSystemAdmin ? 'system/settings' : isCentral ? 'central/dashboard' : isAcct ? 'acct/overview' : 'station/dashboard';
+      setState({ session: { user, station, isSystemAdmin, isCentral, isAcct }, stations, users, records, breakdowns, page, loading: false });
       return { ok: true };
     } catch (e: any) {
       setState({ loading: false, error: e.message });
