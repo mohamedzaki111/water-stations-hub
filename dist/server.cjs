@@ -7862,6 +7862,37 @@ async function initDb() {
 
 // src/db/api.ts
 var import_express = require("express");
+
+// src/utils/logger.ts
+var import_winston = __toESM(require("winston"), 1);
+var import_path = __toESM(require("path"), 1);
+var logDirectory = import_path.default.join(process.cwd(), "logs");
+var logger = import_winston.default.createLogger({
+  level: "info",
+  format: import_winston.default.format.combine(
+    import_winston.default.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    import_winston.default.format.errors({ stack: true }),
+    import_winston.default.format.splat(),
+    import_winston.default.format.json()
+  ),
+  defaultMeta: { service: "water-stations-hub" },
+  transports: [
+    new import_winston.default.transports.File({ filename: import_path.default.join(logDirectory, "error.log"), level: "error" }),
+    new import_winston.default.transports.File({ filename: import_path.default.join(logDirectory, "combined.log") })
+  ]
+});
+if (process.env.NODE_ENV !== "production") {
+  logger.add(new import_winston.default.transports.Console({
+    format: import_winston.default.format.combine(
+      import_winston.default.format.colorize(),
+      import_winston.default.format.printf(({ level, message, timestamp }) => {
+        return `${timestamp} ${level}: ${message}`;
+      })
+    )
+  }));
+}
+
+// src/db/api.ts
 var apiRouter = (0, import_express.Router)();
 apiRouter.post("/auth/login", async (req, res) => {
   try {
@@ -8043,10 +8074,21 @@ apiRouter.post("/records", async (req, res) => {
 apiRouter.put("/records/:id", async (req, res) => {
   try {
     const d = req.body;
-    const eff = d.turbid_m3 > 0 ? +(d.produced_m3 / d.turbid_m3).toFixed(4) : 0;
-    const kwh_m3 = d.produced_m3 > 0 ? +(d.electricity_kwh / d.produced_m3).toFixed(5) : 0;
-    const alum = d.produced_m3 > 0 ? +(d.alum_liquid / d.produced_m3 * 1e3).toFixed(5) : 0;
-    const cl = d.produced_m3 > 0 ? +((d.chlorine_gas || 0) / d.produced_m3 * 1e3).toFixed(5) : 0;
+    const existing = await queryOne("SELECT * FROM daily_records WHERE id=?", [req.params.id]);
+    if (!existing) {
+      return res.status(404).json({ error: "\u0627\u0644\u0633\u062C\u0644 \u0627\u0644\u0645\u0631\u0627\u062F \u062A\u0639\u062F\u064A\u0644\u0647 \u063A\u064A\u0631 \u0645\u0648\u062C\u0648\u062F" });
+    }
+    const produced_m3 = d.produced_m3 !== void 0 && d.produced_m3 !== null ? Number(d.produced_m3) : existing.produced_m3;
+    const turbid_m3 = d.turbid_m3 !== void 0 && d.turbid_m3 !== null ? Number(d.turbid_m3) : existing.turbid_m3;
+    const alum_liquid = d.alum_liquid !== void 0 && d.alum_liquid !== null ? Number(d.alum_liquid) : existing.alum_liquid;
+    const chlorine_gas = d.chlorine_gas !== void 0 && d.chlorine_gas !== null ? Number(d.chlorine_gas) : existing.chlorine_gas || 0;
+    const electricity_kwh = d.electricity_kwh !== void 0 && d.electricity_kwh !== null ? Number(d.electricity_kwh) : existing.electricity_kwh;
+    const shift_crew = d.shift_crew !== void 0 ? String(d.shift_crew || "") : existing.shift_crew || "";
+    const notes = d.notes !== void 0 ? d.notes || null : existing.notes;
+    const eff = turbid_m3 > 0 ? +(produced_m3 / turbid_m3).toFixed(4) : 0;
+    const kwh_m3 = produced_m3 > 0 ? +(electricity_kwh / produced_m3).toFixed(5) : 0;
+    const alum = produced_m3 > 0 ? +(alum_liquid / produced_m3 * 1e3).toFixed(5) : 0;
+    const cl = produced_m3 > 0 ? +(chlorine_gas / produced_m3 * 1e3).toFixed(5) : 0;
     await run(
       `
       UPDATE daily_records SET
@@ -8055,13 +8097,13 @@ apiRouter.put("/records/:id", async (req, res) => {
         efficiency=?, kwh_per_m3=?, alum_per_m3=?, chlorine_per_m3=?
       WHERE id=?`,
       [
-        d.produced_m3,
-        d.turbid_m3,
-        d.alum_liquid,
-        d.chlorine_gas || 0,
-        d.electricity_kwh,
-        d.shift_crew,
-        d.notes || null,
+        produced_m3,
+        turbid_m3,
+        alum_liquid,
+        chlorine_gas,
+        electricity_kwh,
+        shift_crew,
+        notes,
         eff,
         kwh_m3,
         alum,
@@ -8071,6 +8113,7 @@ apiRouter.put("/records/:id", async (req, res) => {
     );
     res.json({ ok: true });
   } catch (e) {
+    logger.error(`Error updating record: ${e.message}`);
     res.status(500).json({ error: e.message });
   }
 });
@@ -8250,40 +8293,18 @@ apiRouter.post("/ai/analyze-station", async (req, res) => {
     res.json({ success: false, error: e.message });
   }
 });
+apiRouter.post("/logs/client-error", (req, res) => {
+  try {
+    const { message, stack, context } = req.body;
+    logger.error(`[Client Error] ${message} | Context: ${JSON.stringify(context || {})} | Stack: ${stack || "N/A"}`);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
 // server.ts
 var import_morgan = __toESM(require("morgan"), 1);
-
-// src/utils/logger.ts
-var import_winston = __toESM(require("winston"), 1);
-var import_path = __toESM(require("path"), 1);
-var logDirectory = import_path.default.join(process.cwd(), "logs");
-var logger = import_winston.default.createLogger({
-  level: "info",
-  format: import_winston.default.format.combine(
-    import_winston.default.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-    import_winston.default.format.errors({ stack: true }),
-    import_winston.default.format.splat(),
-    import_winston.default.format.json()
-  ),
-  defaultMeta: { service: "water-stations-hub" },
-  transports: [
-    new import_winston.default.transports.File({ filename: import_path.default.join(logDirectory, "error.log"), level: "error" }),
-    new import_winston.default.transports.File({ filename: import_path.default.join(logDirectory, "combined.log") })
-  ]
-});
-if (process.env.NODE_ENV !== "production") {
-  logger.add(new import_winston.default.transports.Console({
-    format: import_winston.default.format.combine(
-      import_winston.default.format.colorize(),
-      import_winston.default.format.printf(({ level, message, timestamp }) => {
-        return `${timestamp} ${level}: ${message}`;
-      })
-    )
-  }));
-}
-
-// server.ts
 import_dotenv.default.config();
 var dirName = typeof __dirname !== "undefined" ? __dirname : import_path2.default.dirname(process.argv[1] || process.cwd());
 var isBundle = process.argv[1]?.endsWith("server.cjs") ?? false;
