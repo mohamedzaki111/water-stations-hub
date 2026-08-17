@@ -116,7 +116,7 @@ export const LoginScreen: React.FC = () => {
               <p className="text-xs text-slate-400 mt-2">الشركة القابضة لمياه الشرب والصرف الصحي</p>
             </div>
             <div className="w-20 h-20 rounded-2xl bg-white p-2 flex items-center justify-center shadow-lg shadow-teal-500/20">
-              <img src="/logo.svg" alt="Logo" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
           </div>
 

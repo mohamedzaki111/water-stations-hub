@@ -1,4 +1,4 @@
-import { Station, User, DailyRecord, BreakdownRecord } from '../types';
+import { Station, User, DailyRecord, BreakdownRecord, LabRecord, SupplyOrder, InventorySettings } from '../types';
 
 export const initialStations: Station[] = [
   {
@@ -7608,3 +7608,218 @@ export const initialBreakdowns: BreakdownRecord[] = [
     created_at: "2026-05-08T19:00:00"
   }
 ];
+
+export const initialLabRecords: LabRecord[] = [
+  {
+    id: "lab101",
+    station_id: "giza",
+    date: "2026-05-08",
+    time: "08:30",
+    shift: "الوردية الأولى (صباحية)",
+    turbidity_raw: 35.5,
+    ph_raw: 7.8,
+    temp_raw: 24,
+    flow_m3h: 6200,
+    alum_lab_dose: 33.2,
+    alum_actual_dose: 34.0,
+    alum_diff: 0.8,
+    alum_diff_pct: 2.4,
+    turbidity_settled: 1.8,
+    turbidity_filtered: 0.35,
+    residual_chlorine: 2.2,
+    tested_by: "ك/ أحمد مجدي",
+    notes: "تكوين ندف سريع وترسيب ممتاز في المروقات",
+    created_at: "2026-05-08T08:30:00"
+  },
+  {
+    id: "lab102",
+    station_id: "giza",
+    date: "2026-05-07",
+    time: "14:00",
+    shift: "الوردية الثانية (مسائية)",
+    turbidity_raw: 42.0,
+    ph_raw: 7.9,
+    temp_raw: 25,
+    flow_m3h: 6000,
+    alum_lab_dose: 36.5,
+    alum_actual_dose: 38.0,
+    alum_diff: 1.5,
+    alum_diff_pct: 4.1,
+    turbidity_settled: 2.1,
+    turbidity_filtered: 0.42,
+    residual_chlorine: 2.0,
+    tested_by: "ك/ محمد مصطفى",
+    notes: "ارتفاع طفيف في عكارة المأخذ بسبب رياح وأمواج",
+    created_at: "2026-05-07T14:00:00"
+  },
+  {
+    id: "lab103",
+    station_id: "imbaba",
+    date: "2026-05-08",
+    time: "09:15",
+    shift: "الوردية الأولى (صباحية)",
+    turbidity_raw: 28.0,
+    ph_raw: 7.7,
+    temp_raw: 23.5,
+    flow_m3h: 8500,
+    alum_lab_dose: 29.8,
+    alum_actual_dose: 30.5,
+    alum_diff: 0.7,
+    alum_diff_pct: 2.3,
+    turbidity_settled: 1.5,
+    turbidity_filtered: 0.28,
+    residual_chlorine: 2.4,
+    tested_by: "ك/ سارة محمود",
+    notes: "جودة ممتازة للمياه المرشحة",
+    created_at: "2026-05-08T09:15:00"
+  },
+  {
+    id: "lab104",
+    station_id: "sheikh_zayed",
+    date: "2026-05-08",
+    time: "10:00",
+    shift: "الوردية الأولى (صباحية)",
+    turbidity_raw: 22.0,
+    ph_raw: 7.6,
+    temp_raw: 23,
+    flow_m3h: 12000,
+    alum_lab_dose: 26.5,
+    alum_actual_dose: 26.0,
+    alum_diff: -0.5,
+    alum_diff_pct: -1.9,
+    turbidity_settled: 1.2,
+    turbidity_filtered: 0.22,
+    residual_chlorine: 2.5,
+    tested_by: "ك/ حسام حسن",
+    notes: "مطابقة تامة لجرعة الجار تست مع التشغيل الفعلي",
+    created_at: "2026-05-08T10:00:00"
+  }
+];
+
+export const initialInventorySettings: InventorySettings[] = [
+  {
+    id: "inv_giza_alum",
+    station_id: "giza",
+    item_type: "alum_liquid",
+    tank_capacity_tons: 120, // سعة 4 خزانات × 30 طن
+    opening_stock_tons: 65.5,
+    opening_stock_date: "2026-05-01",
+    reorder_level_tons: 25,
+    safety_stock_tons: 15
+  },
+  {
+    id: "inv_imbaba_alum",
+    station_id: "imbaba",
+    item_type: "alum_liquid",
+    tank_capacity_tons: 150,
+    opening_stock_tons: 80.0,
+    opening_stock_date: "2026-05-01",
+    reorder_level_tons: 35,
+    safety_stock_tons: 20
+  },
+  {
+    id: "inv_zayed_alum",
+    station_id: "sheikh_zayed",
+    item_type: "alum_liquid",
+    tank_capacity_tons: 200,
+    opening_stock_tons: 110.0,
+    opening_stock_date: "2026-05-01",
+    reorder_level_tons: 40,
+    safety_stock_tons: 25
+  },
+  {
+    id: "inv_dahab_alum",
+    station_id: "dahab_island",
+    item_type: "alum_liquid",
+    tank_capacity_tons: 180,
+    opening_stock_tons: 95.0,
+    opening_stock_date: "2026-05-01",
+    reorder_level_tons: 35,
+    safety_stock_tons: 20
+  }
+];
+
+export const initialSupplyOrders: SupplyOrder[] = [
+  {
+    id: "so_101",
+    station_id: "giza",
+    item_type: "alum_liquid",
+    item_name: "شبة سائلة (تركيز 8.2%)",
+    order_number: "توريد-2026/054",
+    supplier: "شركة أبو زعبل للأسمدة والمواد الكيماوية",
+    date: "2026-05-03",
+    quantity_tons: 25.40,
+    unit_price: 3450,
+    total_cost: 87630,
+    vehicle_plate: "أ ق ر 8532 (فنطاس)",
+    driver_name: "سيد محمود إبراهيم",
+    invoice_number: "INV-884102",
+    purity_pct: 8.25,
+    lab_status: "مقبول",
+    received_by: "أ/ محمود عبد الفتاح",
+    notes: "تم الفحص المعملي وتفريغ الشحنة في الخزان رقم 2 و 3.",
+    created_at: "2026-05-03T10:30:00"
+  },
+  {
+    id: "so_102",
+    station_id: "giza",
+    item_type: "alum_liquid",
+    item_name: "شبة سائلة (تركيز 8.3%)",
+    order_number: "توريد-2026/061",
+    supplier: "شركة مصر لصناعة الكيماويات",
+    date: "2026-05-07",
+    quantity_tons: 26.15,
+    unit_price: 3450,
+    total_cost: 90217.5,
+    vehicle_plate: "ط ر ف 1947 (فنطاس)",
+    driver_name: "رمضان حسن علي",
+    invoice_number: "INV-902341",
+    purity_pct: 8.30,
+    lab_status: "مقبول",
+    received_by: "أ/ محمود عبد الفتاح",
+    notes: "تفريغ في الخزان رقم 1 و 4 — جودة مطابقة للمواصفات القياسية.",
+    created_at: "2026-05-07T14:15:00"
+  },
+  {
+    id: "so_103",
+    station_id: "imbaba",
+    item_type: "alum_liquid",
+    item_name: "شبة سائلة",
+    order_number: "توريد-2026/058",
+    supplier: "شركة أبو زعبل للأسمدة والمواد الكيماوية",
+    date: "2026-05-05",
+    quantity_tons: 27.80,
+    unit_price: 3450,
+    total_cost: 95910,
+    vehicle_plate: "ق س ج 6314 (فنطاس)",
+    driver_name: "عادل سمير عثمان",
+    invoice_number: "INV-891104",
+    purity_pct: 8.20,
+    lab_status: "مقبول",
+    received_by: "أ/ أسامة خليل",
+    notes: "تمت المعايرة والوزن على بسكول المحطة وتطابق الوزن.",
+    created_at: "2026-05-05T11:00:00"
+  },
+  {
+    id: "so_104",
+    station_id: "sheikh_zayed",
+    item_type: "alum_liquid",
+    item_name: "شبة سائلة",
+    order_number: "توريد-2026/062",
+    supplier: "شركة النصر للكيماويات الوسيطة",
+    date: "2026-05-06",
+    quantity_tons: 30.50,
+    unit_price: 3420,
+    total_cost: 104310,
+    vehicle_plate: "ي د ن 4421 (فنطاس)",
+    driver_name: "إسماعيل عبد المنعم",
+    invoice_number: "NCIC-44019",
+    purity_pct: 8.35,
+    lab_status: "مقبول",
+    received_by: "أ/ حازم صبري",
+    notes: "شحنة ممتازة مطابقة للمواصفة وتم استلام بوليصة الشحن.",
+    created_at: "2026-05-06T09:45:00"
+  }
+];
+
+

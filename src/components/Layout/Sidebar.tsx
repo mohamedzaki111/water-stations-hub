@@ -6,6 +6,7 @@ import {
   PenTool,
   Table,
   Calendar,
+  BarChart3,
   Wrench,
   Building2,
   Users,
@@ -19,6 +20,7 @@ import {
   Droplets,
   ShieldAlert,
   Settings,
+  Boxes,
 } from 'lucide-react';
 
 interface NavItem {
@@ -51,11 +53,14 @@ export const Sidebar: React.FC<{
     { s: 'البيانات والتقارير' },
     { id: 'central/entry', label: 'إدخال بيانات يومية', icon: <PenTool size={18} /> },
     { id: 'central/records', label: 'سجل البيانات اليومية', icon: <Table size={18} /> },
-    { id: 'central/monthly', label: 'التقرير الشهري', icon: <Calendar size={18} /> },
+    { id: 'central/monthly', label: 'التقرير الشهري (جداول)', icon: <Calendar size={18} /> },
+    { id: 'central/charts', label: 'تقرير الرسومات البيانية', icon: <BarChart3 size={18} /> },
+    { s: 'المخازن والكيماويات' },
+    { id: 'central/inventory', label: 'إدارة المخازن ومخزون الشبة', icon: <Boxes size={18} /> },
     { id: 'acct/chemicals', label: 'تقرير الكيماويات والصيانة', icon: <FlaskConical size={18} /> },
-    { s: 'الأعطال والذكاء الاصطناعي' },
+    { s: 'الأعطال والمعمل' },
     { id: 'central/breakdowns', label: 'سجل الأعطال والصيانة', icon: <Wrench size={18} />, badge: openBreakdowns },
-    { id: 'central/jartest', label: 'مستشار Jar Test الذكي', icon: <FlaskConical size={18} /> },
+    { id: 'central/jartest', label: 'المعمل وضبط جرعات الشبة', icon: <FlaskConical size={18} /> },
     { s: 'الإدارة والتهيئة' },
     { id: 'central/stations', label: 'إدارة المحطات وحالات التشغيل', icon: <Building2 size={18} /> },
     { id: 'central/static', label: 'البيانات الثابتة والملف الفني', icon: <Wrench size={18} /> },
@@ -74,9 +79,11 @@ export const Sidebar: React.FC<{
     { s: 'البيانات والعمليات' },
     { id: 'station/entry', label: 'إدخال يومي', icon: <PenTool size={18} /> },
     { id: 'station/records', label: 'سجلات المحطة', icon: <Table size={18} /> },
-    { id: 'station/monthly', label: 'التقرير الشهري', icon: <Calendar size={18} /> },
-    { s: 'المعمل والأعطال' },
-    { id: 'station/jartest', label: 'مستشار الجار تست (Jar Test)', icon: <FlaskConical size={18} /> },
+    { id: 'station/monthly', label: 'التقرير الشهري (جداول)', icon: <Calendar size={18} /> },
+    { id: 'station/charts', label: 'تقرير الرسومات البيانية', icon: <BarChart3 size={18} /> },
+    { s: 'المخزن والمعمل' },
+    { id: 'station/inventory', label: 'مخزن الشبة والتوريدات', icon: <Boxes size={18} /> },
+    { id: 'station/jartest', label: 'المعمل وضبط جرعات الشبة', icon: <FlaskConical size={18} /> },
     { id: 'station/breakdowns', label: 'سجل الأعطال', icon: <Wrench size={18} />, badge: openBreakdowns },
     { s: 'إعدادات المحطة' },
     { id: 'station/static', label: 'البيانات الثابتة والملف الفني', icon: <Building2 size={18} /> },
@@ -85,6 +92,7 @@ export const Sidebar: React.FC<{
   const acctNav: NavItem[] = [
     { s: 'الحسابات والتكاليف' },
     { id: 'acct/overview', label: 'نظرة عامة على التكاليف', icon: <LayoutDashboard size={18} /> },
+    { id: 'acct/inventory', label: 'إدارة المخازن وتوريدات الشبة', icon: <Boxes size={18} /> },
     { id: 'acct/chemicals', label: 'تقرير الكيماويات والصيانة', icon: <FlaskConical size={18} /> },
   ];
 
@@ -114,7 +122,7 @@ export const Sidebar: React.FC<{
       {/* Header Logo */}
       <div className="p-5 border-b border-slate-800 flex items-center gap-3">
         <div className="w-10 h-10 rounded-lg bg-white p-1 flex items-center justify-center shadow-md shrink-0">
-          <img src="/logo.svg" alt="Logo" className="w-full h-full object-contain" />
+          <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
         </div>
         <div className="min-w-0">
           <h1 className="text-base font-bold text-white tracking-tight truncate">

@@ -1,5 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Station, User, DailyRecord, BreakdownRecord, StationStats } from '../types.js';
+import {
+  Station,
+  User,
+  DailyRecord,
+  BreakdownRecord,
+  LabRecord,
+  SupplyOrder,
+  InventorySettings,
+  InventoryItemSummary,
+  InventoryLedgerEntry,
+  StationStats
+} from '../types.js';
 import { api } from './apiClient.js';
 
 // ── Stats calculator ──────────────────────────────────────────
@@ -22,6 +33,10 @@ interface AppState {
   users: User[];
   records: DailyRecord[];
   breakdowns: BreakdownRecord[];
+  labRecords: LabRecord[];
+  supplyOrders: SupplyOrder[];
+  inventorySettings: InventorySettings[];
+  inventorySummaries: InventoryItemSummary[];
   page: string;
   loading: boolean;
   error: string | null;
@@ -30,6 +45,7 @@ interface AppState {
 const listeners = new Set<() => void>();
 let state: AppState = {
   session: null, stations: [], users: [], records: [], breakdowns: [],
+  labRecords: [], supplyOrders: [], inventorySettings: [], inventorySummaries: [],
   page: 'login', loading: false, error: null,
 };
 
@@ -38,14 +54,18 @@ function setState(patch: Partial<AppState>) { state = { ...state, ...patch }; no
 
 // ── Store actions ─────────────────────────────────────────────
 export const store = {
-  get session()    { return state.session; },
-  get stations()   { return state.stations; },
-  get users()      { return state.users; },
-  get records()    { return state.records; },
-  get breakdowns() { return state.breakdowns; },
-  get page()       { return state.page; },
-  get loading()    { return state.loading; },
-  get error()      { return state.error; },
+  get session()            { return state.session; },
+  get stations()           { return state.stations; },
+  get users()              { return state.users; },
+  get records()            { return state.records; },
+  get breakdowns()         { return state.breakdowns; },
+  get labRecords()         { return state.labRecords; },
+  get supplyOrders()       { return state.supplyOrders; },
+  get inventorySettings()  { return state.inventorySettings; },
+  get inventorySummaries() { return state.inventorySummaries; },
+  get page()               { return state.page; },
+  get loading()            { return state.loading; },
+  get error()              { return state.error; },
 
   subscribe(fn: () => void) { listeners.add(fn); return () => listeners.delete(fn); },
   navigate(page: string)    { setState({ page }); },
@@ -56,18 +76,26 @@ export const store = {
       setState({ loading: true, error: null });
       const { user } = await api.auth.login(username);
       // Load all data after login
-      const [stations, users, records, breakdowns] = await Promise.all([
+      const [stations, users, records, breakdowns, labRecords, supplyOrders, inventorySettings, inventorySummaries] = await Promise.all([
         api.stations.getAll(),
         api.users.getAll(),
         api.records.getAll({ limit: 500 }),
         api.breakdowns.getAll(),
+        api.labRecords.getAll({ limit: 200 }).catch(() => []),
+        api.supplyOrders.getAll({ limit: 200 }).catch(() => []),
+        api.inventory.getSettings().catch(() => []),
+        api.inventory.getSummary({ item_type: 'alum_liquid' }).catch(() => []),
       ]);
       const station = user.station_id ? stations.find((s: Station) => s.id === user.station_id) || null : null;
       const isSystemAdmin = user.role === 'system_admin';
       const isCentral = user.role === 'central_admin';
       const isAcct    = user.role === 'cost_accountant';
       const page = isSystemAdmin ? 'system/settings' : isCentral ? 'central/dashboard' : isAcct ? 'acct/overview' : 'station/dashboard';
-      setState({ session: { user, station, isSystemAdmin, isCentral, isAcct }, stations, users, records, breakdowns, page, loading: false });
+      setState({
+        session: { user, station, isSystemAdmin, isCentral, isAcct },
+        stations, users, records, breakdowns, labRecords, supplyOrders,
+        inventorySettings, inventorySummaries, page, loading: false
+      });
       return { ok: true };
     } catch (e: any) {
       setState({ loading: false, error: e.message });
@@ -75,7 +103,7 @@ export const store = {
     }
   },
 
-  logout() { setState({ session: null, page: 'login', records: [], breakdowns: [] }); },
+  logout() { setState({ session: null, page: 'login', records: [], breakdowns: [], labRecords: [], supplyOrders: [] }); },
 
   // ── Records ───────────────────────────────────────────────
   getRecords(filters: { station_id?: string; month?: string } = {}) {
@@ -88,9 +116,12 @@ export const store = {
   async addRecord(draft: any) {
     try {
       const result = await api.records.create({ ...draft, created_by: state.session?.user.id || '' });
-      // Refresh records
-      const records = await api.records.getAll({ limit: 500 });
-      setState({ records });
+      // Refresh records and inventory summary
+      const [records, inventorySummaries] = await Promise.all([
+        api.records.getAll({ limit: 500 }),
+        api.inventory.getSummary({ item_type: 'alum_liquid' }).catch(() => state.inventorySummaries),
+      ]);
+      setState({ records, inventorySummaries });
       return { ok: true };
     } catch (e: any) {
       return { ok: false, error: e.message };
@@ -99,16 +130,25 @@ export const store = {
 
   async updateRecord(id: string, patch: any) {
     try {
+      setState({ loading: true });
       await api.records.update(id, patch);
-      const records = await api.records.getAll({ limit: 500 });
-      setState({ records });
-    } catch (e: any) { setState({ error: e.message }); }
+      const [records, inventorySummaries] = await Promise.all([
+        api.records.getAll({ limit: 500 }),
+        api.inventory.getSummary({ item_type: 'alum_liquid' }).catch(() => state.inventorySummaries),
+      ]);
+      setState({ records, inventorySummaries, loading: false });
+      return { ok: true };
+    } catch (e: any) {
+      setState({ error: e.message, loading: false });
+      return { ok: false, error: e.message };
+    }
   },
 
   async deleteRecord(id: string) {
     try {
       await api.records.delete(id);
-      setState({ records: state.records.filter(r => r.id !== id) });
+      const inventorySummaries = await api.inventory.getSummary({ item_type: 'alum_liquid' }).catch(() => state.inventorySummaries);
+      setState({ records: state.records.filter(r => r.id !== id), inventorySummaries });
     } catch (e: any) { setState({ error: e.message }); }
   },
 
@@ -199,6 +239,112 @@ export const store = {
     const bds = state.breakdowns.filter(b => b.station_id === stationId);
     return { total: bds.length, open: bds.filter(b => b.status === 'جارٍ').length, resolved: bds.filter(b => b.status === 'مكتمل').length, total_loss: bds.reduce((s, b) => s + (b.production_loss_m3 || 0), 0) };
   },
+
+  // ── Lab Records (قياسات وتجارب المعمل والجرعات) ─────────────
+  getLabRecords(filters: { station_id?: string; month?: string } = {}) {
+    let r = state.labRecords;
+    if (filters.station_id) r = r.filter(x => x.station_id === filters.station_id);
+    if (filters.month)      r = r.filter(x => x.date.startsWith(filters.month!));
+    return r.sort((a, b) => b.date.localeCompare(a.date));
+  },
+
+  async addLabRecord(d: any) {
+    try {
+      const res = await api.labRecords.create(d);
+      const labRecords = await api.labRecords.getAll({ limit: 200 });
+      setState({ labRecords });
+      return { ok: true, id: res.id };
+    } catch (e: any) {
+      return { ok: false, error: e.message };
+    }
+  },
+
+  async deleteLabRecord(id: string) {
+    try {
+      await api.labRecords.delete(id);
+      setState({ labRecords: state.labRecords.filter(r => r.id !== id) });
+      return { ok: true };
+    } catch (e: any) {
+      return { ok: false, error: e.message };
+    }
+  },
+
+  labStats(stationId?: string) {
+    const recs = stationId ? state.labRecords.filter(r => r.station_id === stationId) : state.labRecords;
+    if (!recs.length) {
+      return { count: 0, avgLabDose: 0, avgActualDose: 0, avgDiff: 0, matchRatePct: 0 };
+    }
+    const sumLab = recs.reduce((s, r) => s + r.alum_lab_dose, 0);
+    const sumActual = recs.reduce((s, r) => s + r.alum_actual_dose, 0);
+    const matchedCount = recs.filter(r => Math.abs(r.alum_diff_pct || 0) <= 5).length;
+    return {
+      count: recs.length,
+      avgLabDose: +(sumLab / recs.length).toFixed(2),
+      avgActualDose: +(sumActual / recs.length).toFixed(2),
+      avgDiff: +((sumActual - sumLab) / recs.length).toFixed(2),
+      matchRatePct: +((matchedCount / recs.length) * 100).toFixed(1),
+    };
+  },
+
+  // ── Supply Orders & Inventory (أوامر التوريد والمخازن) ──────
+  getSupplyOrders(filters: { station_id?: string; item_type?: string; month?: string } = {}) {
+    let r = state.supplyOrders;
+    if (filters.station_id) r = r.filter(x => x.station_id === filters.station_id);
+    if (filters.item_type)  r = r.filter(x => x.item_type === filters.item_type);
+    if (filters.month)      r = r.filter(x => x.date.startsWith(filters.month!));
+    return r.sort((a, b) => b.date.localeCompare(a.date));
+  },
+
+  async addSupplyOrder(d: any) {
+    try {
+      const res = await api.supplyOrders.create(d);
+      const [supplyOrders, inventorySummaries] = await Promise.all([
+        api.supplyOrders.getAll({ limit: 200 }),
+        api.inventory.getSummary({ item_type: d.item_type || 'alum_liquid' }),
+      ]);
+      setState({ supplyOrders, inventorySummaries });
+      return { ok: true, id: res.id };
+    } catch (e: any) {
+      return { ok: false, error: e.message };
+    }
+  },
+
+  async deleteSupplyOrder(id: string, itemType = 'alum_liquid') {
+    try {
+      await api.supplyOrders.delete(id);
+      const [supplyOrders, inventorySummaries] = await Promise.all([
+        api.supplyOrders.getAll({ limit: 200 }),
+        api.inventory.getSummary({ item_type: itemType }),
+      ]);
+      setState({ supplyOrders, inventorySummaries });
+      return { ok: true };
+    } catch (e: any) {
+      return { ok: false, error: e.message };
+    }
+  },
+
+  async refreshInventory(itemType = 'alum_liquid') {
+    try {
+      const [inventorySummaries, inventorySettings, supplyOrders] = await Promise.all([
+        api.inventory.getSummary({ item_type: itemType }),
+        api.inventory.getSettings(),
+        api.supplyOrders.getAll({ limit: 200 }),
+      ]);
+      setState({ inventorySummaries, inventorySettings, supplyOrders });
+    } catch (e: any) {
+      setState({ error: e.message });
+    }
+  },
+
+  async updateInventorySettings(d: any) {
+    try {
+      await api.inventory.updateSettings(d);
+      await this.refreshInventory(d.item_type || 'alum_liquid');
+      return { ok: true };
+    } catch (e: any) {
+      return { ok: false, error: e.message };
+    }
+  },
 };
 
 // ── React hook ────────────────────────────────────────────────
@@ -210,3 +356,5 @@ export function useStore() {
 
 // Alias for backward compatibility with components
 export const appStore = store;
+
+

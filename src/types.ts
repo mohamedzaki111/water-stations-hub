@@ -169,6 +169,7 @@ export interface DailyRecord {
   pressure_low?: number;
   alum_solid?: number; // tons
   alum_liquid: number; // tons
+  alum_lab_dose?: number; // g/m3 (الجرعة المعملية للشبة)
   chlorine_gas?: number; // tons
   hypochlorite?: number; // tons
   electricity_kwh: number;
@@ -185,6 +186,28 @@ export interface DailyRecord {
   shift_crew: string;
   notes?: string;
   created_by: string;
+  created_at: string;
+}
+
+export interface LabRecord {
+  id: string;
+  station_id: string;
+  date: string; // YYYY-MM-DD
+  time?: string; // HH:MM
+  shift?: string;
+  turbidity_raw: number; // NTU عكارة المياه الخام
+  ph_raw?: number; // الرقم الهيدروجيني
+  temp_raw?: number; // درجة الحرارة °م
+  flow_m3h?: number; // تصرف المياه الخام م³/ساعة
+  alum_lab_dose: number; // PPM / g/m3 (الجرعة المعملية للشبة)
+  alum_actual_dose: number; // PPM / g/m3 (الجرعة الفعلية للشبة)
+  alum_diff?: number; // actual - lab
+  alum_diff_pct?: number; // ((actual - lab) / lab) * 100
+  turbidity_settled?: number; // NTU عكارة بعد المروق
+  turbidity_filtered?: number; // NTU عكارة بعد المرشح
+  residual_chlorine?: number; // PPM الكلور المتبقي
+  tested_by?: string; // اسم فني المعمل / الكيميائي
+  notes?: string;
   created_at: string;
 }
 
@@ -221,3 +244,69 @@ export interface StationStats {
   avg_power_factor: number;
   sludge_m3: number;
 }
+
+export type ChemicalItemType = 'alum_liquid' | 'alum_solid' | 'chlorine_gas' | 'hypochlorite';
+
+export interface SupplyOrder {
+  id: string;
+  station_id: string;
+  item_type: ChemicalItemType;
+  item_name: string; // e.g. شبة سائلة
+  order_number: string; // رقم إذن الإضافة / أمر التوريد
+  supplier: string; // اسم الشركة الموردة
+  date: string; // YYYY-MM-DD
+  quantity_tons: number; // الكمية الموردة بالطن
+  unit_price?: number; // سعر الطن
+  total_cost?: number; // إجمالي القيمة
+  vehicle_plate?: string; // رقم الفنطاس / السيارة
+  driver_name?: string; // اسم السائق
+  invoice_number?: string; // رقم البوليصة / الفاتورة
+  purity_pct?: number; // نسبة تركيز المادة الفعالة
+  lab_status: 'مقبول' | 'مرفوض' | 'تحت الفحص'; // مطابقة عينة المعمل
+  received_by: string; // أمين المخزن / المستلم
+  notes?: string;
+  created_at: string;
+}
+
+export interface InventorySettings {
+  id: string;
+  station_id: string;
+  item_type: ChemicalItemType;
+  tank_capacity_tons: number; // السعة الإجمالية للخزانات بالطن
+  opening_stock_tons: number; // الرصيد الافتتاحي بالطن
+  opening_stock_date: string; // تاريخ الرصيد الافتتاحي
+  reorder_level_tons: number; // حد إعادة الطلب
+  safety_stock_tons: number; // حد الأمان الأدنى
+}
+
+export interface InventoryItemSummary {
+  station_id: string;
+  station_name: string;
+  item_type: ChemicalItemType;
+  item_name: string;
+  tank_capacity: number;
+  opening_stock: number;
+  total_received: number; // إجمالي الوارد من أوامر التوريد
+  total_consumed: number; // إجمالي المستهلك من السجلات اليومية
+  current_stock: number; // الرصيد الحالي المتبقي (افتتاحي + وارد - مستهلك)
+  stock_percentage: number; // نسبة امتلاء الخزانات %
+  avg_daily_consumption: number; // متوسط الاستهلاك اليومي (طن/يوم)
+  days_of_cover: number; // عدد الأيام المتبقية حتى نفاد المخزون
+  reorder_level: number;
+  safety_stock: number;
+  status: 'optimal' | 'low' | 'critical' | 'excess'; // حالة المخزون
+}
+
+export interface InventoryLedgerEntry {
+  id: string;
+  date: string;
+  type: 'in' | 'out' | 'opening' | 'adjustment';
+  type_label: string;
+  reference_no: string; // رقم إذن التوريد أو تاريخ اليومية
+  description: string;
+  in_qty: number; // وارد (طن)
+  out_qty: number; // منصرف (طن)
+  balance_after: number; // الرصيد المتبقي بعد الحركة (طن)
+  actor: string;
+}
+

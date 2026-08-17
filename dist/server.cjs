@@ -7635,6 +7635,217 @@ var initialBreakdowns = [
     created_at: "2026-05-08T19:00:00"
   }
 ];
+var initialLabRecords = [
+  {
+    id: "lab101",
+    station_id: "giza",
+    date: "2026-05-08",
+    time: "08:30",
+    shift: "\u0627\u0644\u0648\u0631\u062F\u064A\u0629 \u0627\u0644\u0623\u0648\u0644\u0649 (\u0635\u0628\u0627\u062D\u064A\u0629)",
+    turbidity_raw: 35.5,
+    ph_raw: 7.8,
+    temp_raw: 24,
+    flow_m3h: 6200,
+    alum_lab_dose: 33.2,
+    alum_actual_dose: 34,
+    alum_diff: 0.8,
+    alum_diff_pct: 2.4,
+    turbidity_settled: 1.8,
+    turbidity_filtered: 0.35,
+    residual_chlorine: 2.2,
+    tested_by: "\u0643/ \u0623\u062D\u0645\u062F \u0645\u062C\u062F\u064A",
+    notes: "\u062A\u0643\u0648\u064A\u0646 \u0646\u062F\u0641 \u0633\u0631\u064A\u0639 \u0648\u062A\u0631\u0633\u064A\u0628 \u0645\u0645\u062A\u0627\u0632 \u0641\u064A \u0627\u0644\u0645\u0631\u0648\u0642\u0627\u062A",
+    created_at: "2026-05-08T08:30:00"
+  },
+  {
+    id: "lab102",
+    station_id: "giza",
+    date: "2026-05-07",
+    time: "14:00",
+    shift: "\u0627\u0644\u0648\u0631\u062F\u064A\u0629 \u0627\u0644\u062B\u0627\u0646\u064A\u0629 (\u0645\u0633\u0627\u0626\u064A\u0629)",
+    turbidity_raw: 42,
+    ph_raw: 7.9,
+    temp_raw: 25,
+    flow_m3h: 6e3,
+    alum_lab_dose: 36.5,
+    alum_actual_dose: 38,
+    alum_diff: 1.5,
+    alum_diff_pct: 4.1,
+    turbidity_settled: 2.1,
+    turbidity_filtered: 0.42,
+    residual_chlorine: 2,
+    tested_by: "\u0643/ \u0645\u062D\u0645\u062F \u0645\u0635\u0637\u0641\u0649",
+    notes: "\u0627\u0631\u062A\u0641\u0627\u0639 \u0637\u0641\u064A\u0641 \u0641\u064A \u0639\u0643\u0627\u0631\u0629 \u0627\u0644\u0645\u0623\u062E\u0630 \u0628\u0633\u0628\u0628 \u0631\u064A\u0627\u062D \u0648\u0623\u0645\u0648\u0627\u062C",
+    created_at: "2026-05-07T14:00:00"
+  },
+  {
+    id: "lab103",
+    station_id: "imbaba",
+    date: "2026-05-08",
+    time: "09:15",
+    shift: "\u0627\u0644\u0648\u0631\u062F\u064A\u0629 \u0627\u0644\u0623\u0648\u0644\u0649 (\u0635\u0628\u0627\u062D\u064A\u0629)",
+    turbidity_raw: 28,
+    ph_raw: 7.7,
+    temp_raw: 23.5,
+    flow_m3h: 8500,
+    alum_lab_dose: 29.8,
+    alum_actual_dose: 30.5,
+    alum_diff: 0.7,
+    alum_diff_pct: 2.3,
+    turbidity_settled: 1.5,
+    turbidity_filtered: 0.28,
+    residual_chlorine: 2.4,
+    tested_by: "\u0643/ \u0633\u0627\u0631\u0629 \u0645\u062D\u0645\u0648\u062F",
+    notes: "\u062C\u0648\u062F\u0629 \u0645\u0645\u062A\u0627\u0632\u0629 \u0644\u0644\u0645\u064A\u0627\u0647 \u0627\u0644\u0645\u0631\u0634\u062D\u0629",
+    created_at: "2026-05-08T09:15:00"
+  },
+  {
+    id: "lab104",
+    station_id: "sheikh_zayed",
+    date: "2026-05-08",
+    time: "10:00",
+    shift: "\u0627\u0644\u0648\u0631\u062F\u064A\u0629 \u0627\u0644\u0623\u0648\u0644\u0649 (\u0635\u0628\u0627\u062D\u064A\u0629)",
+    turbidity_raw: 22,
+    ph_raw: 7.6,
+    temp_raw: 23,
+    flow_m3h: 12e3,
+    alum_lab_dose: 26.5,
+    alum_actual_dose: 26,
+    alum_diff: -0.5,
+    alum_diff_pct: -1.9,
+    turbidity_settled: 1.2,
+    turbidity_filtered: 0.22,
+    residual_chlorine: 2.5,
+    tested_by: "\u0643/ \u062D\u0633\u0627\u0645 \u062D\u0633\u0646",
+    notes: "\u0645\u0637\u0627\u0628\u0642\u0629 \u062A\u0627\u0645\u0629 \u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u062C\u0627\u0631 \u062A\u0633\u062A \u0645\u0639 \u0627\u0644\u062A\u0634\u063A\u064A\u0644 \u0627\u0644\u0641\u0639\u0644\u064A",
+    created_at: "2026-05-08T10:00:00"
+  }
+];
+var initialInventorySettings = [
+  {
+    id: "inv_giza_alum",
+    station_id: "giza",
+    item_type: "alum_liquid",
+    tank_capacity_tons: 120,
+    // سعة 4 خزانات × 30 طن
+    opening_stock_tons: 65.5,
+    opening_stock_date: "2026-05-01",
+    reorder_level_tons: 25,
+    safety_stock_tons: 15
+  },
+  {
+    id: "inv_imbaba_alum",
+    station_id: "imbaba",
+    item_type: "alum_liquid",
+    tank_capacity_tons: 150,
+    opening_stock_tons: 80,
+    opening_stock_date: "2026-05-01",
+    reorder_level_tons: 35,
+    safety_stock_tons: 20
+  },
+  {
+    id: "inv_zayed_alum",
+    station_id: "sheikh_zayed",
+    item_type: "alum_liquid",
+    tank_capacity_tons: 200,
+    opening_stock_tons: 110,
+    opening_stock_date: "2026-05-01",
+    reorder_level_tons: 40,
+    safety_stock_tons: 25
+  },
+  {
+    id: "inv_dahab_alum",
+    station_id: "dahab_island",
+    item_type: "alum_liquid",
+    tank_capacity_tons: 180,
+    opening_stock_tons: 95,
+    opening_stock_date: "2026-05-01",
+    reorder_level_tons: 35,
+    safety_stock_tons: 20
+  }
+];
+var initialSupplyOrders = [
+  {
+    id: "so_101",
+    station_id: "giza",
+    item_type: "alum_liquid",
+    item_name: "\u0634\u0628\u0629 \u0633\u0627\u0626\u0644\u0629 (\u062A\u0631\u0643\u064A\u0632 8.2%)",
+    order_number: "\u062A\u0648\u0631\u064A\u062F-2026/054",
+    supplier: "\u0634\u0631\u0643\u0629 \u0623\u0628\u0648 \u0632\u0639\u0628\u0644 \u0644\u0644\u0623\u0633\u0645\u062F\u0629 \u0648\u0627\u0644\u0645\u0648\u0627\u062F \u0627\u0644\u0643\u064A\u0645\u0627\u0648\u064A\u0629",
+    date: "2026-05-03",
+    quantity_tons: 25.4,
+    unit_price: 3450,
+    total_cost: 87630,
+    vehicle_plate: "\u0623 \u0642 \u0631 8532 (\u0641\u0646\u0637\u0627\u0633)",
+    driver_name: "\u0633\u064A\u062F \u0645\u062D\u0645\u0648\u062F \u0625\u0628\u0631\u0627\u0647\u064A\u0645",
+    invoice_number: "INV-884102",
+    purity_pct: 8.25,
+    lab_status: "\u0645\u0642\u0628\u0648\u0644",
+    received_by: "\u0623/ \u0645\u062D\u0645\u0648\u062F \u0639\u0628\u062F \u0627\u0644\u0641\u062A\u0627\u062D",
+    notes: "\u062A\u0645 \u0627\u0644\u0641\u062D\u0635 \u0627\u0644\u0645\u0639\u0645\u0644\u064A \u0648\u062A\u0641\u0631\u064A\u063A \u0627\u0644\u0634\u062D\u0646\u0629 \u0641\u064A \u0627\u0644\u062E\u0632\u0627\u0646 \u0631\u0642\u0645 2 \u0648 3.",
+    created_at: "2026-05-03T10:30:00"
+  },
+  {
+    id: "so_102",
+    station_id: "giza",
+    item_type: "alum_liquid",
+    item_name: "\u0634\u0628\u0629 \u0633\u0627\u0626\u0644\u0629 (\u062A\u0631\u0643\u064A\u0632 8.3%)",
+    order_number: "\u062A\u0648\u0631\u064A\u062F-2026/061",
+    supplier: "\u0634\u0631\u0643\u0629 \u0645\u0635\u0631 \u0644\u0635\u0646\u0627\u0639\u0629 \u0627\u0644\u0643\u064A\u0645\u0627\u0648\u064A\u0627\u062A",
+    date: "2026-05-07",
+    quantity_tons: 26.15,
+    unit_price: 3450,
+    total_cost: 90217.5,
+    vehicle_plate: "\u0637 \u0631 \u0641 1947 (\u0641\u0646\u0637\u0627\u0633)",
+    driver_name: "\u0631\u0645\u0636\u0627\u0646 \u062D\u0633\u0646 \u0639\u0644\u064A",
+    invoice_number: "INV-902341",
+    purity_pct: 8.3,
+    lab_status: "\u0645\u0642\u0628\u0648\u0644",
+    received_by: "\u0623/ \u0645\u062D\u0645\u0648\u062F \u0639\u0628\u062F \u0627\u0644\u0641\u062A\u0627\u062D",
+    notes: "\u062A\u0641\u0631\u064A\u063A \u0641\u064A \u0627\u0644\u062E\u0632\u0627\u0646 \u0631\u0642\u0645 1 \u0648 4 \u2014 \u062C\u0648\u062F\u0629 \u0645\u0637\u0627\u0628\u0642\u0629 \u0644\u0644\u0645\u0648\u0627\u0635\u0641\u0627\u062A \u0627\u0644\u0642\u064A\u0627\u0633\u064A\u0629.",
+    created_at: "2026-05-07T14:15:00"
+  },
+  {
+    id: "so_103",
+    station_id: "imbaba",
+    item_type: "alum_liquid",
+    item_name: "\u0634\u0628\u0629 \u0633\u0627\u0626\u0644\u0629",
+    order_number: "\u062A\u0648\u0631\u064A\u062F-2026/058",
+    supplier: "\u0634\u0631\u0643\u0629 \u0623\u0628\u0648 \u0632\u0639\u0628\u0644 \u0644\u0644\u0623\u0633\u0645\u062F\u0629 \u0648\u0627\u0644\u0645\u0648\u0627\u062F \u0627\u0644\u0643\u064A\u0645\u0627\u0648\u064A\u0629",
+    date: "2026-05-05",
+    quantity_tons: 27.8,
+    unit_price: 3450,
+    total_cost: 95910,
+    vehicle_plate: "\u0642 \u0633 \u062C 6314 (\u0641\u0646\u0637\u0627\u0633)",
+    driver_name: "\u0639\u0627\u062F\u0644 \u0633\u0645\u064A\u0631 \u0639\u062B\u0645\u0627\u0646",
+    invoice_number: "INV-891104",
+    purity_pct: 8.2,
+    lab_status: "\u0645\u0642\u0628\u0648\u0644",
+    received_by: "\u0623/ \u0623\u0633\u0627\u0645\u0629 \u062E\u0644\u064A\u0644",
+    notes: "\u062A\u0645\u062A \u0627\u0644\u0645\u0639\u0627\u064A\u0631\u0629 \u0648\u0627\u0644\u0648\u0632\u0646 \u0639\u0644\u0649 \u0628\u0633\u0643\u0648\u0644 \u0627\u0644\u0645\u062D\u0637\u0629 \u0648\u062A\u0637\u0627\u0628\u0642 \u0627\u0644\u0648\u0632\u0646.",
+    created_at: "2026-05-05T11:00:00"
+  },
+  {
+    id: "so_104",
+    station_id: "sheikh_zayed",
+    item_type: "alum_liquid",
+    item_name: "\u0634\u0628\u0629 \u0633\u0627\u0626\u0644\u0629",
+    order_number: "\u062A\u0648\u0631\u064A\u062F-2026/062",
+    supplier: "\u0634\u0631\u0643\u0629 \u0627\u0644\u0646\u0635\u0631 \u0644\u0644\u0643\u064A\u0645\u0627\u0648\u064A\u0627\u062A \u0627\u0644\u0648\u0633\u064A\u0637\u0629",
+    date: "2026-05-06",
+    quantity_tons: 30.5,
+    unit_price: 3420,
+    total_cost: 104310,
+    vehicle_plate: "\u064A \u062F \u0646 4421 (\u0641\u0646\u0637\u0627\u0633)",
+    driver_name: "\u0625\u0633\u0645\u0627\u0639\u064A\u0644 \u0639\u0628\u062F \u0627\u0644\u0645\u0646\u0639\u0645",
+    invoice_number: "NCIC-44019",
+    purity_pct: 8.35,
+    lab_status: "\u0645\u0642\u0628\u0648\u0644",
+    received_by: "\u0623/ \u062D\u0627\u0632\u0645 \u0635\u0628\u0631\u064A",
+    notes: "\u0634\u062D\u0646\u0629 \u0645\u0645\u062A\u0627\u0632\u0629 \u0645\u0637\u0627\u0628\u0642\u0629 \u0644\u0644\u0645\u0648\u0627\u0635\u0641\u0629 \u0648\u062A\u0645 \u0627\u0633\u062A\u0644\u0627\u0645 \u0628\u0648\u0644\u064A\u0635\u0629 \u0627\u0644\u0634\u062D\u0646.",
+    created_at: "2026-05-06T09:45:00"
+  }
+];
 
 // src/db/database.ts
 var pool = null;
@@ -7735,6 +7946,7 @@ async function initDb() {
       pressure_low          DOUBLE,
       alum_solid            DOUBLE,
       alum_liquid           DOUBLE       NOT NULL DEFAULT 0,
+      alum_lab_dose         DOUBLE,
       chlorine_gas          DOUBLE,
       hypochlorite          DOUBLE,
       flow_meters_ok        TINYINT(1)   NOT NULL DEFAULT 1,
@@ -7757,6 +7969,10 @@ async function initDb() {
       INDEX idx_date (date)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   `);
+  try {
+    await db.execute("ALTER TABLE daily_records ADD COLUMN alum_lab_dose DOUBLE AFTER alum_liquid");
+  } catch (err) {
+  }
   await db.execute(`
     CREATE TABLE IF NOT EXISTS breakdowns (
       id                    VARCHAR(50)  PRIMARY KEY,
@@ -7778,10 +7994,164 @@ async function initDb() {
       INDEX idx_station (station_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
   `);
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS lab_records (
+      id                    VARCHAR(50)  PRIMARY KEY,
+      station_id            VARCHAR(50)  NOT NULL,
+      date                  DATE         NOT NULL,
+      time                  VARCHAR(10),
+      shift                 VARCHAR(100),
+      turbidity_raw         DOUBLE       NOT NULL,
+      ph_raw                DOUBLE,
+      temp_raw              DOUBLE,
+      flow_m3h              DOUBLE,
+      alum_lab_dose         DOUBLE       NOT NULL,
+      alum_actual_dose      DOUBLE       NOT NULL,
+      alum_diff             DOUBLE,
+      alum_diff_pct         DOUBLE,
+      turbidity_settled     DOUBLE,
+      turbidity_filtered    DOUBLE,
+      residual_chlorine     DOUBLE,
+      tested_by             VARCHAR(150),
+      notes                 TEXT,
+      created_at            DATETIME     NOT NULL,
+      INDEX idx_station (station_id),
+      INDEX idx_date (date)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+  `);
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS supply_orders (
+      id                 VARCHAR(50)  PRIMARY KEY,
+      station_id         VARCHAR(50)  NOT NULL,
+      item_type          VARCHAR(50)  NOT NULL DEFAULT 'alum_liquid',
+      item_name          VARCHAR(150) NOT NULL DEFAULT '\u0634\u0628\u0629 \u0633\u0627\u0626\u0644\u0629',
+      order_number       VARCHAR(100) NOT NULL,
+      supplier           VARCHAR(200) NOT NULL,
+      date               DATE         NOT NULL,
+      quantity_tons      DOUBLE       NOT NULL,
+      unit_price         DOUBLE,
+      total_cost         DOUBLE,
+      vehicle_plate      VARCHAR(50),
+      driver_name        VARCHAR(100),
+      invoice_number     VARCHAR(100),
+      purity_pct         DOUBLE,
+      lab_status         VARCHAR(50)  DEFAULT '\u0645\u0642\u0628\u0648\u0644',
+      received_by        VARCHAR(100),
+      notes              TEXT,
+      created_at         DATETIME     NOT NULL,
+      INDEX idx_station (station_id),
+      INDEX idx_date (date)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+  `);
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS inventory_settings (
+      id                  VARCHAR(50) PRIMARY KEY,
+      station_id          VARCHAR(50) NOT NULL,
+      item_type           VARCHAR(50) NOT NULL,
+      tank_capacity_tons  DOUBLE      NOT NULL DEFAULT 100,
+      opening_stock_tons  DOUBLE      NOT NULL DEFAULT 0,
+      opening_stock_date  DATE        NOT NULL,
+      reorder_level_tons  DOUBLE      NOT NULL DEFAULT 20,
+      safety_stock_tons   DOUBLE      NOT NULL DEFAULT 10,
+      UNIQUE KEY uq_station_item (station_id, item_type)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+  `);
   console.log("Tables ready");
   const [rows] = await db.execute("SELECT COUNT(*) as c FROM stations");
   if (rows[0].c > 0) {
-    console.log("Database already seeded \u2014 skipping");
+    const [labRows] = await db.execute("SELECT COUNT(*) as c FROM lab_records");
+    if (labRows[0].c === 0 && (initialLabRecords || []).length > 0) {
+      for (const l of initialLabRecords) {
+        await db.execute(
+          `
+          INSERT IGNORE INTO lab_records
+            (id, station_id, date, time, shift, turbidity_raw, ph_raw, temp_raw, flow_m3h,
+             alum_lab_dose, alum_actual_dose, alum_diff, alum_diff_pct, turbidity_settled,
+             turbidity_filtered, residual_chlorine, tested_by, notes, created_at)
+          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+          [
+            l.id,
+            l.station_id,
+            l.date,
+            l.time || "",
+            l.shift || "",
+            l.turbidity_raw,
+            l.ph_raw || null,
+            l.temp_raw || null,
+            l.flow_m3h || null,
+            l.alum_lab_dose,
+            l.alum_actual_dose,
+            l.alum_diff || l.alum_actual_dose - l.alum_lab_dose,
+            l.alum_diff_pct || (l.alum_lab_dose > 0 ? +((l.alum_actual_dose - l.alum_lab_dose) / l.alum_lab_dose * 100).toFixed(2) : 0),
+            l.turbidity_settled || null,
+            l.turbidity_filtered || null,
+            l.residual_chlorine || null,
+            l.tested_by || "",
+            l.notes || "",
+            l.created_at.replace("T", " ").slice(0, 19)
+          ]
+        );
+      }
+      console.log("Seeded initial lab records");
+    }
+    const [soRows] = await db.execute("SELECT COUNT(*) as c FROM supply_orders");
+    if (soRows[0].c === 0 && (initialSupplyOrders || []).length > 0) {
+      for (const so of initialSupplyOrders) {
+        await db.execute(
+          `
+          INSERT IGNORE INTO supply_orders
+            (id, station_id, item_type, item_name, order_number, supplier, date,
+             quantity_tons, unit_price, total_cost, vehicle_plate, driver_name,
+             invoice_number, purity_pct, lab_status, received_by, notes, created_at)
+          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+          [
+            so.id,
+            so.station_id,
+            so.item_type,
+            so.item_name,
+            so.order_number,
+            so.supplier,
+            so.date,
+            so.quantity_tons,
+            so.unit_price || null,
+            so.total_cost || null,
+            so.vehicle_plate || "",
+            so.driver_name || "",
+            so.invoice_number || "",
+            so.purity_pct || null,
+            so.lab_status || "\u0645\u0642\u0628\u0648\u0644",
+            so.received_by || "",
+            so.notes || "",
+            so.created_at.replace("T", " ").slice(0, 19)
+          ]
+        );
+      }
+      console.log("Seeded initial supply orders");
+    }
+    const [invRows] = await db.execute("SELECT COUNT(*) as c FROM inventory_settings");
+    if (invRows[0].c === 0 && (initialInventorySettings || []).length > 0) {
+      for (const inv of initialInventorySettings) {
+        await db.execute(
+          `
+          INSERT IGNORE INTO inventory_settings
+            (id, station_id, item_type, tank_capacity_tons, opening_stock_tons,
+             opening_stock_date, reorder_level_tons, safety_stock_tons)
+          VALUES (?,?,?,?,?,?,?,?)`,
+          [
+            inv.id,
+            inv.station_id,
+            inv.item_type,
+            inv.tank_capacity_tons,
+            inv.opening_stock_tons,
+            inv.opening_stock_date,
+            inv.reorder_level_tons,
+            inv.safety_stock_tons
+          ]
+        );
+      }
+      console.log("Seeded initial inventory settings");
+    }
+    console.log("Database already initialized");
     return;
   }
   console.log("Seeding initial data...");
@@ -7850,8 +8220,88 @@ async function initDb() {
         ]
       );
     }
+    for (const l of initialLabRecords || []) {
+      await conn.execute(
+        `
+        INSERT IGNORE INTO lab_records
+          (id, station_id, date, time, shift, turbidity_raw, ph_raw, temp_raw, flow_m3h,
+           alum_lab_dose, alum_actual_dose, alum_diff, alum_diff_pct, turbidity_settled,
+           turbidity_filtered, residual_chlorine, tested_by, notes, created_at)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+        [
+          l.id,
+          l.station_id,
+          l.date,
+          l.time || "",
+          l.shift || "",
+          l.turbidity_raw,
+          l.ph_raw || null,
+          l.temp_raw || null,
+          l.flow_m3h || null,
+          l.alum_lab_dose,
+          l.alum_actual_dose,
+          l.alum_diff || l.alum_actual_dose - l.alum_lab_dose,
+          l.alum_diff_pct || (l.alum_lab_dose > 0 ? +((l.alum_actual_dose - l.alum_lab_dose) / l.alum_lab_dose * 100).toFixed(2) : 0),
+          l.turbidity_settled || null,
+          l.turbidity_filtered || null,
+          l.residual_chlorine || null,
+          l.tested_by || "",
+          l.notes || "",
+          l.created_at.replace("T", " ").slice(0, 19)
+        ]
+      );
+    }
+    for (const so of initialSupplyOrders || []) {
+      await conn.execute(
+        `
+        INSERT IGNORE INTO supply_orders
+          (id, station_id, item_type, item_name, order_number, supplier, date,
+           quantity_tons, unit_price, total_cost, vehicle_plate, driver_name,
+           invoice_number, purity_pct, lab_status, received_by, notes, created_at)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+        [
+          so.id,
+          so.station_id,
+          so.item_type,
+          so.item_name,
+          so.order_number,
+          so.supplier,
+          so.date,
+          so.quantity_tons,
+          so.unit_price || null,
+          so.total_cost || null,
+          so.vehicle_plate || "",
+          so.driver_name || "",
+          so.invoice_number || "",
+          so.purity_pct || null,
+          so.lab_status || "\u0645\u0642\u0628\u0648\u0644",
+          so.received_by || "",
+          so.notes || "",
+          so.created_at.replace("T", " ").slice(0, 19)
+        ]
+      );
+    }
+    for (const inv of initialInventorySettings || []) {
+      await conn.execute(
+        `
+        INSERT IGNORE INTO inventory_settings
+          (id, station_id, item_type, tank_capacity_tons, opening_stock_tons,
+           opening_stock_date, reorder_level_tons, safety_stock_tons)
+        VALUES (?,?,?,?,?,?,?,?)`,
+        [
+          inv.id,
+          inv.station_id,
+          inv.item_type,
+          inv.tank_capacity_tons,
+          inv.opening_stock_tons,
+          inv.opening_stock_date,
+          inv.reorder_level_tons,
+          inv.safety_stock_tons
+        ]
+      );
+    }
     await conn.commit();
-    console.log("Seeded: " + initialStations.length + " stations, " + initialUsers.length + " users, " + initialRecords.length + " records");
+    console.log("Seeded: " + initialStations.length + " stations, " + initialUsers.length + " users, " + initialRecords.length + " records, " + initialLabRecords.length + " lab records, " + initialSupplyOrders.length + " supply orders");
   } catch (e) {
     await conn.rollback();
     throw e;
@@ -8234,7 +8684,475 @@ apiRouter.delete("/breakdowns/:id", async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+apiRouter.get("/lab-records", async (req, res) => {
+  try {
+    const { station_id, month, limit = "200" } = req.query;
+    let sql = "SELECT * FROM lab_records WHERE 1=1";
+    const params = [];
+    if (station_id) {
+      sql += " AND station_id=?";
+      params.push(station_id);
+    }
+    if (month) {
+      sql += " AND date LIKE ?";
+      params.push(month + "%");
+    }
+    sql += " ORDER BY date DESC, time DESC, created_at DESC LIMIT ?";
+    params.push(parseInt(limit));
+    const records = await query(sql, params);
+    res.json(records.map((r) => ({
+      ...r,
+      date: typeof r.date === "object" ? r.date.toISOString().slice(0, 10) : r.date
+    })));
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+apiRouter.post("/lab-records", async (req, res) => {
+  try {
+    const d = req.body;
+    if (!d.station_id || !d.date || d.alum_lab_dose === void 0 || d.alum_actual_dose === void 0) {
+      return res.status(400).json({ error: "\u0627\u0644\u0645\u062D\u0637\u0629 \u0648\u0627\u0644\u062A\u0627\u0631\u064A\u062E \u0648\u0627\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0645\u0639\u0645\u0644\u064A\u0629 \u0648\u0627\u0644\u0641\u0639\u0644\u064A\u0629 \u0645\u0637\u0644\u0648\u0628\u0629" });
+    }
+    const id = d.id || "lab_" + Date.now();
+    const labDose = Number(d.alum_lab_dose) || 0;
+    const actualDose = Number(d.alum_actual_dose) || 0;
+    const diff = +(actualDose - labDose).toFixed(2);
+    const diffPct = labDose > 0 ? +(diff / labDose * 100).toFixed(2) : 0;
+    await run(
+      `
+      INSERT INTO lab_records (
+        id, station_id, date, time, shift, turbidity_raw, ph_raw, temp_raw, flow_m3h,
+        alum_lab_dose, alum_actual_dose, alum_diff, alum_diff_pct,
+        turbidity_settled, turbidity_filtered, residual_chlorine,
+        tested_by, notes, created_at
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [
+        id,
+        d.station_id,
+        d.date,
+        d.time || "",
+        d.shift || "",
+        Number(d.turbidity_raw) || 0,
+        d.ph_raw !== void 0 ? Number(d.ph_raw) : null,
+        d.temp_raw !== void 0 ? Number(d.temp_raw) : null,
+        d.flow_m3h !== void 0 ? Number(d.flow_m3h) : null,
+        labDose,
+        actualDose,
+        diff,
+        diffPct,
+        d.turbidity_settled !== void 0 && d.turbidity_settled !== null ? Number(d.turbidity_settled) : null,
+        d.turbidity_filtered !== void 0 && d.turbidity_filtered !== null ? Number(d.turbidity_filtered) : null,
+        d.residual_chlorine !== void 0 && d.residual_chlorine !== null ? Number(d.residual_chlorine) : null,
+        d.tested_by || "",
+        d.notes || "",
+        (/* @__PURE__ */ new Date()).toISOString().slice(0, 19).replace("T", " ")
+      ]
+    );
+    res.json({ ok: true, id });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+apiRouter.delete("/lab-records/:id", async (req, res) => {
+  try {
+    await run("DELETE FROM lab_records WHERE id=?", [req.params.id]);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+apiRouter.get("/supply-orders", async (req, res) => {
+  try {
+    const { station_id, item_type, month, limit = "200" } = req.query;
+    let sql = "SELECT * FROM supply_orders WHERE 1=1";
+    const params = [];
+    if (station_id) {
+      sql += " AND station_id=?";
+      params.push(station_id);
+    }
+    if (item_type) {
+      sql += " AND item_type=?";
+      params.push(item_type);
+    }
+    if (month) {
+      sql += " AND date LIKE ?";
+      params.push(month + "%");
+    }
+    sql += " ORDER BY date DESC, created_at DESC LIMIT ?";
+    params.push(parseInt(limit));
+    const orders = await query(sql, params);
+    res.json(orders.map((o) => ({
+      ...o,
+      date: typeof o.date === "object" ? o.date.toISOString().slice(0, 10) : o.date
+    })));
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+apiRouter.post("/supply-orders", async (req, res) => {
+  try {
+    const d = req.body;
+    if (!d.station_id || !d.date || !d.quantity_tons || !d.supplier || !d.order_number) {
+      return res.status(400).json({ error: "\u0627\u0644\u0645\u062D\u0637\u0629 \u0648\u0631\u0642\u0645 \u0627\u0644\u0625\u0630\u0646 \u0648\u0627\u0644\u062A\u0627\u0631\u064A\u062E \u0648\u0627\u0644\u0645\u0648\u0631\u062F \u0648\u0627\u0644\u0643\u0645\u064A\u0629 \u0645\u0637\u0644\u0648\u0628\u0629" });
+    }
+    const id = d.id || "so_" + Date.now();
+    const qty = Number(d.quantity_tons) || 0;
+    const unitPrice = d.unit_price ? Number(d.unit_price) : null;
+    const totalCost = d.total_cost ? Number(d.total_cost) : unitPrice ? +(qty * unitPrice).toFixed(2) : null;
+    await run(
+      `
+      INSERT INTO supply_orders (
+        id, station_id, item_type, item_name, order_number, supplier, date,
+        quantity_tons, unit_price, total_cost, vehicle_plate, driver_name,
+        invoice_number, purity_pct, lab_status, received_by, notes, created_at
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [
+        id,
+        d.station_id,
+        d.item_type || "alum_liquid",
+        d.item_name || "\u0634\u0628\u0629 \u0633\u0627\u0626\u0644\u0629",
+        d.order_number,
+        d.supplier,
+        d.date,
+        qty,
+        unitPrice,
+        totalCost,
+        d.vehicle_plate || "",
+        d.driver_name || "",
+        d.invoice_number || "",
+        d.purity_pct ? Number(d.purity_pct) : null,
+        d.lab_status || "\u0645\u0642\u0628\u0648\u0644",
+        d.received_by || "",
+        d.notes || "",
+        (/* @__PURE__ */ new Date()).toISOString().slice(0, 19).replace("T", " ")
+      ]
+    );
+    res.json({ ok: true, id });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+apiRouter.delete("/supply-orders/:id", async (req, res) => {
+  try {
+    await run("DELETE FROM supply_orders WHERE id=?", [req.params.id]);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+apiRouter.get("/inventory/settings", async (req, res) => {
+  try {
+    const { station_id } = req.query;
+    let sql = "SELECT * FROM inventory_settings";
+    const params = [];
+    if (station_id) {
+      sql += " WHERE station_id=?";
+      params.push(station_id);
+    }
+    const settings = await query(sql, params);
+    res.json(settings.map((s) => ({
+      ...s,
+      opening_stock_date: typeof s.opening_stock_date === "object" ? s.opening_stock_date.toISOString().slice(0, 10) : s.opening_stock_date
+    })));
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+apiRouter.post("/inventory/settings", async (req, res) => {
+  try {
+    const { station_id, item_type = "alum_liquid", tank_capacity_tons, opening_stock_tons, opening_stock_date, reorder_level_tons, safety_stock_tons } = req.body;
+    if (!station_id) return res.status(400).json({ error: "\u0627\u0644\u0645\u062D\u0637\u0629 \u0645\u0637\u0644\u0648\u0628\u0629" });
+    const id = `inv_${station_id}_${item_type}`;
+    const cap = Number(tank_capacity_tons) || 100;
+    const op = Number(opening_stock_tons) || 0;
+    const opDate = opening_stock_date || "2026-05-01";
+    const reorder = Number(reorder_level_tons) || 20;
+    const safety = Number(safety_stock_tons) || 10;
+    await run(`
+      INSERT INTO inventory_settings (id, station_id, item_type, tank_capacity_tons, opening_stock_tons, opening_stock_date, reorder_level_tons, safety_stock_tons)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        tank_capacity_tons=VALUES(tank_capacity_tons),
+        opening_stock_tons=VALUES(opening_stock_tons),
+        opening_stock_date=VALUES(opening_stock_date),
+        reorder_level_tons=VALUES(reorder_level_tons),
+        safety_stock_tons=VALUES(safety_stock_tons)
+    `, [id, station_id, item_type, cap, op, opDate, reorder, safety]);
+    res.json({ ok: true, id });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+apiRouter.get("/inventory/summary", async (req, res) => {
+  try {
+    const { station_id, item_type = "alum_liquid" } = req.query;
+    let stationsSql = "SELECT id, data FROM stations";
+    const stParams = [];
+    if (station_id && station_id !== "all") {
+      stationsSql += " WHERE id=?";
+      stParams.push(station_id);
+    }
+    const stationRows = await query(stationsSql, stParams);
+    const [settings, orders, records] = await Promise.all([
+      query("SELECT * FROM inventory_settings WHERE item_type=?", [item_type]),
+      query('SELECT station_id, quantity_tons, date FROM supply_orders WHERE item_type=? AND lab_status!="\u0645\u0631\u0641\u0648\u0636"', [item_type]),
+      query("SELECT station_id, alum_liquid, alum_solid, date FROM daily_records")
+    ]);
+    const summaries = stationRows.map((stRow) => {
+      const stId = stRow.id;
+      const stData = JSON.parse(stRow.data || "{}");
+      const stName = stData?.general?.name || stId;
+      const stSetting = settings.find((s) => s.station_id === stId);
+      const cap = stSetting?.tank_capacity_tons || 100;
+      const opStock = stSetting?.opening_stock_tons || 50;
+      const reorderLevel = stSetting?.reorder_level_tons || 25;
+      const safetyStock = stSetting?.safety_stock_tons || 15;
+      const stOrders = orders.filter((o) => o.station_id === stId);
+      const totalReceived = +stOrders.reduce((sum, o) => sum + (Number(o.quantity_tons) || 0), 0).toFixed(2);
+      const stRecords = records.filter((r) => r.station_id === stId);
+      const totalConsumed = +stRecords.reduce((sum, r) => {
+        const val = item_type === "alum_solid" ? Number(r.alum_solid) || 0 : Number(r.alum_liquid) || 0;
+        return sum + val;
+      }, 0).toFixed(2);
+      const currentStock = +(opStock + totalReceived - totalConsumed).toFixed(2);
+      const stockPercentage = cap > 0 ? +(currentStock / cap * 100).toFixed(1) : 0;
+      const recentRecs = stRecords.slice(0, 30);
+      const avgDaily = recentRecs.length > 0 ? +(recentRecs.reduce((sum, r) => sum + (item_type === "alum_solid" ? Number(r.alum_solid) || 0 : Number(r.alum_liquid) || 0), 0) / recentRecs.length).toFixed(2) : 5;
+      const daysOfCover = avgDaily > 0 ? +(currentStock / avgDaily).toFixed(1) : 99;
+      let status = "optimal";
+      if (currentStock <= safetyStock) status = "critical";
+      else if (currentStock <= reorderLevel) status = "low";
+      else if (currentStock > cap * 0.95) status = "excess";
+      return {
+        station_id: stId,
+        station_name: stName,
+        item_type,
+        item_name: item_type === "alum_liquid" ? "\u0634\u0628\u0629 \u0633\u0627\u0626\u0644\u0629" : item_type === "alum_solid" ? "\u0634\u0628\u0629 \u0635\u0644\u0628\u0629" : "\u0643\u064A\u0645\u0627\u0648\u064A\u0627\u062A",
+        tank_capacity: cap,
+        opening_stock: opStock,
+        total_received: totalReceived,
+        total_consumed: totalConsumed,
+        current_stock: currentStock,
+        stock_percentage: Math.max(0, Math.min(100, stockPercentage)),
+        avg_daily_consumption: avgDaily,
+        days_of_cover: Math.max(0, daysOfCover),
+        reorder_level: reorderLevel,
+        safety_stock: safetyStock,
+        status
+      };
+    });
+    res.json(summaries);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+apiRouter.get("/inventory/ledger", async (req, res) => {
+  try {
+    const { station_id, item_type = "alum_liquid" } = req.query;
+    if (!station_id) return res.status(400).json({ error: "\u0627\u0644\u0645\u062D\u0637\u0629 \u0645\u0637\u0644\u0648\u0628\u0629" });
+    const [stSetting, orders, records] = await Promise.all([
+      queryOne("SELECT * FROM inventory_settings WHERE station_id=? AND item_type=?", [station_id, item_type]),
+      query("SELECT id, order_number, supplier, date, quantity_tons, vehicle_plate, received_by, lab_status FROM supply_orders WHERE station_id=? AND item_type=? ORDER BY date ASC", [station_id, item_type]),
+      query("SELECT id, date, alum_liquid, alum_solid, shift_crew FROM daily_records WHERE station_id=? ORDER BY date ASC", [station_id])
+    ]);
+    const openingStock = stSetting?.opening_stock_tons || 50;
+    const opDate = stSetting?.opening_stock_date ? typeof stSetting.opening_stock_date === "object" ? stSetting.opening_stock_date.toISOString().slice(0, 10) : stSetting.opening_stock_date : "2026-05-01";
+    const events = [
+      {
+        date: opDate,
+        type: "opening",
+        ref: "\u0631\u0635\u064A\u062F \u0627\u0641\u062A\u062A\u0627\u062D\u064A",
+        desc: "\u0627\u0644\u0631\u0635\u064A\u062F \u0627\u0644\u0627\u0641\u062A\u062A\u0627\u062D\u064A \u0627\u0644\u0645\u0639\u062A\u0645\u062F \u0644\u0628\u062F\u0627\u064A\u0629 \u0627\u0644\u062F\u0648\u0631\u0629 \u0627\u0644\u0645\u062E\u0632\u0646\u064A\u0629",
+        qty: openingStock,
+        actor: "\u0625\u062F\u0627\u0631\u0629 \u0627\u0644\u0645\u062E\u0627\u0632\u0646"
+      }
+    ];
+    for (const o of orders) {
+      const orderDate = typeof o.date === "object" ? o.date.toISOString().slice(0, 10) : o.date;
+      events.push({
+        date: orderDate,
+        type: "in",
+        ref: o.order_number,
+        desc: `\u062A\u0648\u0631\u064A\u062F \u0634\u062D\u0646\u0629 \u0645\u0646 ${o.supplier} ${o.vehicle_plate ? `(\u0633\u064A\u0627\u0631\u0629: ${o.vehicle_plate})` : ""}`,
+        qty: Number(o.quantity_tons) || 0,
+        actor: o.received_by || "\u0623\u0645\u064A\u0646 \u0627\u0644\u0645\u062E\u0632\u0646"
+      });
+    }
+    for (const r of records) {
+      const recDate = typeof r.date === "object" ? r.date.toISOString().slice(0, 10) : r.date;
+      const consumed = item_type === "alum_solid" ? Number(r.alum_solid) || 0 : Number(r.alum_liquid) || 0;
+      if (consumed > 0) {
+        events.push({
+          date: recDate,
+          type: "out",
+          ref: `\u064A\u0648\u0645\u064A\u0629 ${recDate}`,
+          desc: `\u0627\u0633\u062A\u0647\u0644\u0627\u0643 \u0627\u0644\u062A\u0634\u063A\u064A\u0644 \u0627\u0644\u064A\u0648\u0645\u064A \u0628\u0627\u0644\u0645\u062D\u0637\u0629`,
+          qty: consumed,
+          actor: r.shift_crew || "\u0637\u0627\u0642\u0645 \u0627\u0644\u0648\u0631\u062F\u064A\u0629"
+        });
+      }
+    }
+    events.sort((a, b) => a.date.localeCompare(b.date));
+    let runningBalance = 0;
+    const ledger = events.map((ev, idx) => {
+      if (ev.type === "opening") {
+        runningBalance = ev.qty;
+      } else if (ev.type === "in") {
+        runningBalance += ev.qty;
+      } else if (ev.type === "out") {
+        runningBalance -= ev.qty;
+      }
+      return {
+        id: `led_${idx}_${ev.date}`,
+        date: ev.date,
+        type: ev.type,
+        type_label: ev.type === "opening" ? "\u0631\u0635\u064A\u062F \u0627\u0641\u062A\u062A\u0627\u062D\u064A" : ev.type === "in" ? "\u0625\u0630\u0646 \u0625\u0636\u0627\u0641\u0629 (\u0648\u0627\u0631\u062F)" : "\u0625\u0630\u0646 \u0635\u0631\u0641 (\u0627\u0633\u062A\u0647\u0644\u0627\u0643)",
+        reference_no: ev.ref,
+        description: ev.desc,
+        in_qty: ev.type === "in" ? ev.qty : ev.type === "opening" ? ev.qty : 0,
+        out_qty: ev.type === "out" ? ev.qty : 0,
+        balance_after: +runningBalance.toFixed(2),
+        actor: ev.actor
+      };
+    });
+    res.json(ledger.reverse());
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 apiRouter.get("/health", (_req, res) => res.json({ status: "ok", db: "mysql", timestamp: (/* @__PURE__ */ new Date()).toISOString() }));
+apiRouter.post("/ai/jartest-advisor", async (req, res) => {
+  const { turbidityNTU, pH, temperatureC, rawFlowM3h, stationName, alumLabDose, alumActualDose } = req.body;
+  const apiKey = process.env.GEMINI_API_KEY;
+  const labDose = alumLabDose || +(15 + Math.pow(turbidityNTU || 35, 0.65) * 1.8).toFixed(1);
+  const actualDose = alumActualDose || labDose;
+  const variance = +(actualDose - labDose).toFixed(2);
+  const variancePct = labDose > 0 ? +(variance / labDose * 100).toFixed(1) : 0;
+  if (!apiKey || apiKey === '""' || apiKey === "") {
+    let advice = `### \u{1F9EA} \u062A\u0642\u0631\u064A\u0631 \u0627\u0633\u062A\u0634\u0627\u0631\u064A \u0644\u062C\u0631\u0639\u0627\u062A \u0627\u0644\u0634\u0628\u0629 \u0648\u0627\u0644\u062A\u0634\u063A\u064A\u0644 - ${stationName || "\u0645\u062D\u0637\u0629 \u0645\u064A\u0627\u0647"}
+
+**1. \u062A\u062D\u0644\u064A\u0644 \u0645\u0648\u0627\u0635\u0641\u0627\u062A \u0627\u0644\u0645\u064A\u0627\u0647 \u0627\u0644\u062E\u0627\u0645:**
+* \u0627\u0644\u0639\u0643\u0627\u0631\u0629: **${turbidityNTU || 35} NTU** | \u0627\u0644\u0631\u0642\u0645 \u0627\u0644\u0647\u064A\u062F\u0631\u0648\u062C\u064A\u0646\u064A: **${pH || 7.8}** | \u0627\u0644\u062D\u0631\u0627\u0631\u0629: **${temperatureC || 24} \xB0\u0645**
+* \u0627\u0644\u062A\u0635\u0631\u0641 \u0627\u0644\u0625\u062C\u0645\u0627\u0644\u064A: **${(rawFlowM3h || 6e3).toLocaleString()} \u0645\xB3/\u0633\u0627\u0639\u0629**
+
+**2. \u0645\u0637\u0627\u0628\u0642\u0629 \u0627\u0644\u062C\u0631\u0639\u0627\u062A (\u0627\u0644\u0645\u0639\u0645\u0644\u064A\u0629 vs \u0627\u0644\u0641\u0639\u0644\u064A\u0629):**
+* \u0627\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0645\u0639\u0645\u0644\u064A\u0629 \u0627\u0644\u0645\u062B\u0627\u0644\u064A\u0629 (Jar Test): **${labDose} PPM (\u062C\u0645/\u0645\xB3)**
+* \u0627\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0641\u0639\u0644\u064A\u0629 \u0627\u0644\u0645\u0637\u0628\u0642\u0629 \u0628\u0627\u0644\u0645\u062D\u0637\u0629: **${actualDose} PPM (\u062C\u0645/\u0645\xB3)**
+* \u0627\u0644\u0641\u0627\u0631\u0642 \u0648\u0627\u0644\u0627\u0646\u062D\u0631\u0627\u0641: **${variance >= 0 ? "+" : ""}${variance} \u062C\u0645/\u0645\xB3 (${variancePct >= 0 ? "+" : ""}${variancePct}%)**
+
+**3. \u0627\u0644\u062A\u0642\u064A\u064A\u0645 \u0627\u0644\u0647\u0646\u062F\u0633\u064A \u0648\u0627\u0644\u062A\u0634\u063A\u064A\u0644\u064A:**
+`;
+    if (Math.abs(variancePct) <= 3) {
+      advice += `* \u2705 **\u062A\u0637\u0627\u0628\u0642 \u0645\u0645\u062A\u0627\u0632**: \u0627\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0641\u0639\u0644\u064A\u0629 \u0645\u0637\u0627\u0628\u0642\u0629 \u0644\u062A\u062C\u0631\u0628\u0629 \u0627\u0644\u062C\u0627\u0631 \u062A\u0633\u062A \u0628\u0646\u0633\u0628\u0629 \u0639\u0627\u0644\u064A\u0629\u060C \u0645\u0645\u0627 \u064A\u0636\u0645\u0646 \u0643\u0641\u0627\u0621\u0629 \u0627\u0644\u062A\u0631\u0648\u064A\u0628 \u0627\u0644\u0645\u062B\u0644\u0649 \u0648\u062A\u0631\u0633\u064A\u0628 \u0645\u062A\u0648\u0627\u0632\u0646 \u0628\u0627\u0644\u0645\u0631\u0648\u0642\u0627\u062A \u062F\u0648\u0646 \u0647\u062F\u0631 \u0641\u064A \u0627\u0644\u0643\u064A\u0645\u0627\u0648\u064A\u0627\u062A.
+`;
+    } else if (variance > 0) {
+      advice += `* \u26A0\uFE0F **\u0641\u0627\u0626\u0636 \u0641\u064A \u062C\u0631\u0639\u0629 \u0627\u0644\u0634\u0628\u0629**: \u0627\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0641\u0639\u0644\u064A\u0629 \u0623\u0639\u0644\u0649 \u0645\u0646 \u0627\u0644\u0645\u0639\u0645\u0644\u064A\u0629 \u0628\u0645\u0642\u062F\u0627\u0631 ${variance} \u062C\u0645/\u0645\xB3 (${variancePct}%). \u064A\u0648\u0635\u0649 \u0628\u062E\u0641\u0636 \u0634\u0648\u0637 \u0637\u0644\u0645\u0628\u0627\u062A \u0627\u0644\u062D\u0642\u0646 (Stroke) \u0628\u0646\u0633\u0628\u0629 ${Math.min(15, Math.abs(variancePct))}% \u0644\u062A\u0648\u0641\u064A\u0631 \u0627\u0644\u0627\u0633\u062A\u0647\u0644\u0627\u0643 \u0648\u062A\u062C\u0646\u0628 \u062A\u0633\u0631\u0628 \u0628\u0642\u0627\u064A\u0627 \u0627\u0644\u0623\u0644\u0648\u0645\u0646\u064A\u0648\u0645 \u0644\u0644\u0645\u0631\u0634\u062D\u0627\u062A.
+`;
+    } else {
+      advice += `* \u26A0\uFE0F **\u0639\u062C\u0632 \u0641\u064A \u062C\u0631\u0639\u0629 \u0627\u0644\u0634\u0628\u0629**: \u0627\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0641\u0639\u0644\u064A\u0629 \u0623\u0642\u0644 \u0645\u0646 \u0627\u0644\u0645\u0639\u0645\u0644\u064A\u0629 \u0628\u0645\u0642\u062F\u0627\u0631 ${Math.abs(variance)} \u062C\u0645/\u0645\xB3. \u0642\u062F \u064A\u0624\u062F\u064A \u0630\u0644\u0643 \u0625\u0644\u0649 \u062A\u0623\u062E\u0631 \u062A\u0643\u0648\u064A\u0646 \u0627\u0644\u0646\u062F\u0641 (Pin-point flocs) \u0648\u0632\u064A\u0627\u062F\u0629 \u062D\u0645\u0644 \u0627\u0644\u0639\u0643\u0627\u0631\u0629 \u0639\u0644\u0649 \u0627\u0644\u0645\u0631\u0634\u062D\u0627\u062A \u0627\u0644\u0631\u0645\u0644\u064A\u0629. \u064A\u0648\u0635\u0649 \u0628\u0632\u064A\u0627\u062F\u0629 \u0645\u0639\u062F\u0644 \u0627\u0644\u062D\u0642\u0646 \u062A\u062F\u0631\u064A\u062C\u064A\u0627\u064B.
+`;
+    }
+    advice += `
+**4. \u0645\u0639\u062F\u0644\u0627\u062A \u0636\u062E \u0645\u062D\u0644\u0648\u0644 \u0627\u0644\u0634\u0628\u0629 (\u062A\u0631\u0643\u064A\u0632 10%):**
+* \u0645\u0639\u062F\u0644 \u0627\u0644\u062D\u0642\u0646 \u0644\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0645\u0639\u0645\u0644\u064A\u0629: **${+(rawFlowM3h * labDose / 1e3 / 1.33 * 10).toFixed(1)} \u0644\u062A\u0631/\u0633\u0627\u0639\u0629**
+* \u0645\u0639\u062F\u0644 \u0627\u0644\u062D\u0642\u0646 \u0644\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0641\u0639\u0644\u064A\u0629: **${+(rawFlowM3h * actualDose / 1e3 / 1.33 * 10).toFixed(1)} \u0644\u062A\u0631/\u0633\u0627\u0639\u0629**
+
+**5. \u062A\u0648\u0635\u064A\u0627\u062A \u0645\u0631\u0627\u0642\u0628\u0629 \u0627\u0644\u0645\u0631\u0648\u0642\u0627\u062A:**
+* \u0641\u062D\u0635 \u0633\u0631\u0639\u0629 \u0627\u0644\u062A\u0631\u0648\u064A\u0628 \u0641\u064A \u062D\u0648\u0636 \u0627\u0644\u062E\u0644\u0637 \u0627\u0644\u0633\u0631\u064A\u0639 (1-2 \u062F\u0642\u064A\u0642\u0629).
+* \u0645\u0631\u0627\u0642\u0628\u0629 \u0637\u0628\u0642\u0629 \u0627\u0644\u0631\u0648\u0628\u0629 \u0641\u064A \u0642\u0627\u0639 \u0627\u0644\u0645\u0631\u0648\u0642 \u0648\u062A\u0641\u0631\u064A\u063A\u0647\u0627 \u0628\u0627\u0646\u062A\u0638\u0627\u0645 \u0644\u062A\u062C\u0646\u0628 \u0627\u0644\u0637\u0641\u0648.`;
+    return res.json({ success: true, text: advice });
+  }
+  try {
+    const prompt = `
+\u0623\u0646\u062A \u0631\u0626\u064A\u0633 \u0642\u0637\u0627\u0639 \u0627\u0644\u0645\u0639\u0627\u0645\u0644 \u0648\u0627\u0644\u0628\u062D\u0648\u062B \u0648\u062E\u0628\u064A\u0631 \u062C\u0648\u062F\u0629 \u0645\u064A\u0627\u0647 \u0627\u0644\u0634\u0631\u0628.
+\u0642\u0645 \u0628\u062A\u062D\u0644\u064A\u0644 \u0628\u064A\u0627\u0646\u0627\u062A \u0627\u0644\u062C\u0627\u0631 \u062A\u0633\u062A \u0648\u0627\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0645\u0639\u0645\u0644\u064A\u0629 \u0645\u0642\u0627\u0628\u0644 \u0627\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0641\u0639\u0644\u064A\u0629 \u0644\u0644\u0634\u0628\u0629 \u0644\u0644\u0645\u062D\u0637\u0629 \u0627\u0644\u062A\u0627\u0644\u064A\u0629 \u0648\u0642\u062F\u0645 \u062A\u0642\u0631\u064A\u0631\u0627\u064B \u0641\u0646\u064A\u0627\u064B \u062F\u0642\u064A\u0642\u0627\u064B \u0648\u0645\u0628\u0627\u0634\u0631\u0627\u064B \u0628\u0627\u0644\u0639\u0631\u0628\u064A\u0629:
+
+\u0627\u0644\u0645\u062D\u0637\u0629: ${stationName || "\u0645\u062D\u0637\u0629 \u0645\u064A\u0627\u0647"}
+- \u0639\u0643\u0627\u0631\u0629 \u0627\u0644\u0645\u064A\u0627\u0647 \u0627\u0644\u062E\u0627\u0645: ${turbidityNTU} NTU
+- \u0627\u0644\u0631\u0642\u0645 \u0627\u0644\u0647\u064A\u062F\u0631\u0648\u062C\u064A\u0646\u064A pH: ${pH}
+- \u062F\u0631\u062C\u0629 \u0627\u0644\u062D\u0631\u0627\u0631\u0629: ${temperatureC} \xB0\u0645
+- \u062A\u0635\u0631\u0641 \u0627\u0644\u0645\u064A\u0627\u0647 \u0627\u0644\u062E\u0627\u0645: ${rawFlowM3h} \u0645\xB3/\u0633\u0627\u0639\u0629
+- \u0627\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0645\u0639\u0645\u0644\u064A\u0629 \u0644\u0644\u0634\u0628\u0629 (Jar Test): ${labDose} \u062C\u0645/\u0645\xB3
+- \u0627\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0641\u0639\u0644\u064A\u0629 \u0627\u0644\u0645\u0637\u0628\u0642\u0629: ${actualDose} \u062C\u0645/\u0645\xB3
+- \u0646\u0633\u0628\u0629 \u0627\u0644\u0641\u0627\u0631\u0642/\u0627\u0644\u0627\u0646\u062D\u0631\u0627\u0641: ${variancePct}%
+
+\u0642\u062F\u0645:
+1. \u062A\u0642\u064A\u064A\u0645 \u0643\u0641\u0627\u0621\u0629 \u0627\u0644\u062A\u0631\u0648\u064A\u0628 \u0648\u0627\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0645\u062B\u0627\u0644\u064A\u0629 \u0644\u0644\u0634\u0628\u0629
+2. \u062A\u062D\u0644\u064A\u0644 \u062F\u0642\u064A\u0642 \u0644\u0644\u0641\u0627\u0631\u0642 \u0628\u064A\u0646 \u0627\u0644\u062C\u0631\u0639\u0629 \u0627\u0644\u0645\u0639\u0645\u0644\u064A\u0629 \u0648\u0627\u0644\u0641\u0639\u0644\u064A\u0629 \u0648\u0623\u062B\u0631\u0647 \u0627\u0644\u0641\u0646\u064A \u0648\u0627\u0644\u0645\u0627\u0644\u064A
+3. \u062A\u0648\u0635\u064A\u0627\u062A \u0641\u0648\u0631\u064A\u0629 \u0644\u0636\u0628\u0637 \u0637\u0644\u0645\u0628\u0627\u062A \u0627\u0644\u062D\u0642\u0646 \u0648\u0645\u0639\u062F\u0644\u0627\u062A \u0627\u0644\u062A\u0635\u0631\u0641 \u0627\u0644\u062D\u062C\u0645\u064A
+4. \u0625\u0631\u0634\u0627\u062F\u0627\u062A \u0644\u0645\u0634\u063A\u0644\u064A \u0627\u0644\u0645\u0631\u0648\u0642\u0627\u062A \u0648\u0627\u0644\u0645\u0631\u0634\u062D\u0627\u062A
+`;
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.3, maxOutputTokens: 1500 }
+        })
+      }
+    );
+    const data = await response.json();
+    if (data.error) return res.json({ success: false, error: data.error.message });
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    res.json({ success: true, text: text || "\u062A\u0645 \u0627\u0644\u062A\u062D\u0644\u064A\u0644 \u0628\u0646\u062C\u0627\u062D" });
+  } catch (e) {
+    res.json({ success: false, error: e.message });
+  }
+});
+apiRouter.post("/ai/diagnose-breakdown", async (req, res) => {
+  const { assetType, assetLabel, severity, description, stationName } = req.body;
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey || apiKey === '""' || apiKey === "") {
+    const advice = `### \u{1F6E0}\uFE0F \u062A\u0634\u062E\u064A\u0635 \u0627\u0644\u0639\u0637\u0644 \u0627\u0644\u0647\u0646\u062F\u0633\u064A - ${stationName || "\u0627\u0644\u0645\u062D\u0637\u0629"}
+
+* **\u0627\u0644\u0645\u0639\u062F\u0629 \u0627\u0644\u0645\u062A\u0623\u062B\u0631\u0629:** ${assetLabel || assetType} (${assetType})
+* **\u0645\u0633\u062A\u0648\u0649 \u0627\u0644\u062E\u0637\u0648\u0631\u0629:** ${severity}
+* **\u0627\u0644\u062A\u0648\u0635\u064A\u0641:** ${description}
+
+**\u062E\u0637\u0629 \u0627\u0644\u0639\u0645\u0644 \u0627\u0644\u0641\u0646\u064A\u0629 \u0627\u0644\u0645\u0648\u0635\u0649 \u0628\u0647\u0627:**
+1. \u0639\u0632\u0644 \u0627\u0644\u0645\u0639\u062F\u0629 \u0643\u0647\u0631\u0628\u0627\u0626\u064A\u0627\u064B \u0648\u0647\u064A\u062F\u0631\u0648\u0644\u064A\u0643\u064A\u0627\u064B \u0648\u062A\u0637\u0628\u064A\u0642 \u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u0633\u0644\u0627\u0645\u0629 \u0648\u0627\u0644\u0635\u062D\u0629 \u0627\u0644\u0645\u0647\u0646\u064A\u0629 (LOTO).
+2. \u0641\u062D\u0635 \u0627\u0644\u0645\u062D\u0627\u0630\u0627\u0629 \u0648\u0627\u0644\u0633\u064A\u0648\u0631 \u0648\u0627\u0644\u0631\u0645\u0627\u0646 \u0628\u0644\u064A \u0648\u0627\u0644\u062A\u0633\u0631\u064A\u0628 \u0627\u0644\u0645\u064A\u0643\u0627\u0646\u064A\u0643\u064A.
+3. \u062A\u0634\u063A\u064A\u0644 \u0627\u0644\u0648\u062D\u062F\u0629 \u0627\u0644\u0627\u062D\u062A\u064A\u0627\u0637\u064A\u0629 \u0641\u0648\u0631\u0627\u064B \u0644\u0644\u062D\u0641\u0627\u0638 \u0639\u0644\u0649 \u0627\u0633\u062A\u0645\u0631\u0627\u0631\u064A\u0629 \u0636\u062E \u0648\u062A\u0635\u0631\u0641 \u0627\u0644\u0645\u062D\u0637\u0629.
+4. \u0637\u0644\u0628 \u0642\u0637\u0639 \u0627\u0644\u063A\u064A\u0627\u0631 \u0627\u0644\u0644\u0627\u0632\u0645\u0629 \u0648\u0625\u0635\u062F\u0627\u0631 \u0623\u0645\u0631 \u0634\u063A\u0644 \u0635\u064A\u0627\u0646\u0629 \u0639\u0627\u062C\u0644.`;
+    return res.json({ success: true, text: advice });
+  }
+  try {
+    const prompt = `
+\u0623\u0646\u062A \u0643\u0628\u064A\u0631 \u0645\u0647\u0646\u062F\u0633\u064A \u0627\u0644\u0635\u064A\u0627\u0646\u0629 \u0648\u0627\u0644\u062A\u0634\u063A\u064A\u0644 \u0641\u064A \u0634\u0631\u0643\u0629 \u0645\u064A\u0627\u0647 \u0627\u0644\u0634\u0631\u0628.
+\u0642\u062F\u0645 \u062A\u0634\u062E\u064A\u0635\u0627\u064B \u0647\u0646\u062F\u0633\u064A\u0627\u064B \u0639\u0627\u062C\u0644\u0627\u064B \u0648\u062E\u0637\u0629 \u0635\u064A\u0627\u0646\u0629 \u0644\u0644\u0639\u0637\u0644 \u0627\u0644\u062A\u0627\u0644\u064A \u0628\u0627\u0644\u0639\u0631\u0628\u064A\u0629:
+- \u0627\u0644\u0645\u062D\u0637\u0629: ${stationName}
+- \u0646\u0648\u0639 \u0627\u0644\u0623\u0635\u0644: ${assetType}
+- \u0628\u064A\u0627\u0646 \u0627\u0644\u0645\u0639\u062F\u0629: ${assetLabel}
+- \u062F\u0631\u062C\u0629 \u0627\u0644\u062E\u0637\u0648\u0631\u0629: ${severity}
+- \u0648\u0635\u0641 \u0627\u0644\u0639\u0637\u0644: ${description}
+
+\u0627\u0644\u0645\u0637\u0644\u0648\u0628:
+1. \u0627\u0644\u062A\u0634\u062E\u064A\u0635 \u0627\u0644\u0623\u0631\u062C\u062D \u0644\u0633\u0628\u0628 \u0627\u0644\u0639\u0637\u0644
+2. \u0627\u0644\u062E\u0637\u0648\u0627\u062A \u0627\u0644\u0641\u0646\u064A\u0629 \u0627\u0644\u0641\u0648\u0631\u064A\u0629 \u0644\u0625\u0635\u0644\u0627\u062D \u0627\u0644\u0639\u0637\u0644
+3. \u0627\u0644\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u0627\u062D\u062A\u0631\u0627\u0632\u064A\u0629 \u0644\u062A\u062C\u0646\u0628 \u0646\u0642\u0635 \u0627\u0644\u0625\u0646\u062A\u0627\u062C
+4. \u0642\u0637\u0639 \u0627\u0644\u063A\u064A\u0627\u0631 \u0627\u0644\u0645\u062A\u0648\u0642\u0639\u0629
+`;
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.3, maxOutputTokens: 1200 }
+        })
+      }
+    );
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    res.json({ success: true, text: text || "\u062A\u0645 \u062A\u0634\u062E\u064A\u0635 \u0627\u0644\u0639\u0637\u0644" });
+  } catch (e) {
+    res.json({ success: false, error: e.message });
+  }
+});
 apiRouter.post("/ai/analyze-station", async (req, res) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey === '""' || apiKey === "") {

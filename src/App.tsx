@@ -10,8 +10,10 @@ import { ScadaMonitor } from './components/Scada/ScadaMonitor';
 import { DailyDataEntry } from './components/Forms/DailyDataEntry';
 import { RecordsTable } from './components/Tables/RecordsTable';
 import { MonthlyReport } from './components/Reports/MonthlyReport';
+import { MonthlyChartsReport } from './components/Reports/MonthlyChartsReport';
 import { ChemicalsReport } from './components/Reports/ChemicalsReport';
 import { JarTestAdvisor } from './components/AiAssistant/JarTestAdvisor';
+import { InventoryManager } from './components/Inventory/InventoryManager';
 import { BreakdownManager } from './components/Breakdowns/BreakdownManager';
 import { StationTechnicalProfile } from './components/Stations/StationTechnicalProfile';
 import { StationCompare } from './components/Stations/StationCompare';
@@ -57,12 +59,20 @@ export default function App() {
         return { title: 'سجل البيانات التفصيلي', subtitle: 'جدول البيانات اليومية مع التصفية والبحث والتعديل والتصدير للإكسل' };
       case 'central/monthly':
       case 'station/monthly':
-        return { title: 'التقرير الشهري التجميعي', subtitle: 'إحصائيات التشغيل ومعدلات استهلاك الكهرباء والكيماويات الشهرية' };
+        return { title: 'التقرير الشهري (جداول البيانات)', subtitle: 'الجداول والإحصائيات التجميعية لإنتاج المياه والكيماويات والطاقة' };
+      case 'central/charts':
+      case 'station/charts':
+        return { title: 'تقرير الرسومات البيانية والتحليلات', subtitle: 'المنحنيات البيانية التفاعلية للإنتاج والكفاءة واستهلاك الطاقة والكيماويات' };
+      case 'central/inventory':
+      case 'station/inventory':
+      case 'acct/inventory':
+        return { title: 'إدارة المخازن والمستودعات والكيماويات', subtitle: 'أوامر التوريد والوارد والخصم المباشر من الاستهلاك ورصيد الشبة المتبقي' };
       case 'acct/overview':
       case 'acct/chemicals':
+        return { title: 'تقرير الكيماويات والصيانة', subtitle: 'تحليل استهلاك الشبة والكلور وأوامر الشغل وتكاليف التشغيل' };
       case 'central/jartest':
       case 'station/jartest':
-        return { title: 'مستشار الجار تست (Jar Test Advisor)', subtitle: 'حساب جرعات الشبة والكلور المثالية باستخدام خبير AI' };
+        return { title: 'إدارة المعمل وضبط جرعات الشبة (Jar Test)', subtitle: 'إدخال ومطابقة الجرعة المعملية والفعلية ومعدلات ضخ الطلمبات وسجل القياسات' };
       case 'central/breakdowns':
       case 'station/breakdowns':
         return { title: 'إدارة الأعطال والتوقفات', subtitle: 'تسجيل الأعطال والتوقفات واستدعاء التشخيص الفني الذكي' };
@@ -102,6 +112,13 @@ export default function App() {
       case 'central/monthly':
       case 'station/monthly':
         return <MonthlyReport />;
+      case 'central/charts':
+      case 'station/charts':
+        return <MonthlyChartsReport />;
+      case 'central/inventory':
+      case 'station/inventory':
+      case 'acct/inventory':
+        return <InventoryManager />;
       case 'acct/overview':
       case 'acct/chemicals':
         return <ChemicalsReport />;

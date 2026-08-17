@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { appStore } from '../../store/appStore';
 import { FlaskConical, DollarSign, AlertCircle, CheckCircle2, TrendingUp, Building } from 'lucide-react';
+import { PdfExportButton } from '../Common/PdfExportButton';
 
 export const ChemicalsReport: React.FC = () => {
   const [alumPriceEgp, setAlumPriceEgp] = useState<number>(4200); // EGP per ton liquid alum
   const [chlorinePriceEgp, setChlorinePriceEgp] = useState<number>(18500); // EGP per ton chlorine gas
   const [electricityPriceEgp, setElectricityPriceEgp] = useState<number>(1.85); // EGP per kWh
+  const reportRef = useRef<HTMLDivElement>(null);
 
   const allStats = appStore.allStats();
 
@@ -23,7 +25,7 @@ export const ChemicalsReport: React.FC = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* Title */}
+      {/* Title & Actions */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3">
@@ -36,7 +38,19 @@ export const ChemicalsReport: React.FC = () => {
             حساب الجرعات ومعدلات استهلاك الشبة السائلة والكلور والتكلفة المباشرة لكل متر مكعب
           </p>
         </div>
+
+        <div className="flex items-center gap-3">
+          <PdfExportButton
+            targetRef={reportRef}
+            filename={`تقرير_الكيماويات_والتكاليف_${new Date().toISOString().slice(0, 10)}`}
+            variant="secondary"
+            size="md"
+            label="تصدير تقرير PDF"
+          />
+        </div>
       </div>
+
+      <div ref={reportRef} id="chemicals-report-content" className="space-y-6 bg-slate-50/40 p-2 rounded-2xl">
 
       {/* Unit Price Controls */}
       <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
@@ -173,6 +187,7 @@ export const ChemicalsReport: React.FC = () => {
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </div>
   );

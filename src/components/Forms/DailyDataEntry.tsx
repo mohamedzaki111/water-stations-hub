@@ -31,6 +31,7 @@ export const DailyDataEntry: React.FC = () => {
 
   const [alumSolid, setAlumSolid] = useState<string>('');
   const [alumLiquid, setAlumLiquid] = useState<string>('7.85');
+  const [alumLabDose, setAlumLabDose] = useState<string>('34');
   const [chlorineGas, setChlorineGas] = useState<string>('1.25');
   const [hypochlorite, setHypochlorite] = useState<string>('');
 
@@ -114,6 +115,7 @@ export const DailyDataEntry: React.FC = () => {
       pressure_low: Number(pressureLow) || undefined,
       alum_solid: Number(alumSolid) || undefined,
       alum_liquid: alumNum,
+      alum_lab_dose: Number(alumLabDose) || undefined,
       chlorine_gas: clNum,
       hypochlorite: Number(hypochlorite) || undefined,
       electricity_kwh: kwhNum,
@@ -350,7 +352,7 @@ export const DailyDataEntry: React.FC = () => {
             </h2>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="col-span-2">
+              <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">الشبة السائلة (طن/يوم)</label>
                 <input
                   type="number"
@@ -359,7 +361,27 @@ export const DailyDataEntry: React.FC = () => {
                   onChange={(e) => setAlumLiquid(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-teal-500"
                 />
-                <span className="text-[10px] text-slate-400 mt-0.5 block">الجرعة: {alumDoseGmM3} جم/م³</span>
+                <span className="text-[10px] text-teal-700 font-bold mt-0.5 block">الجرعة الفعلية: {alumDoseGmM3} جم/م³</span>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">الجرعة المعملية للشبة (جم/م³)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={alumLabDose}
+                  onChange={(e) => setAlumLabDose(e.target.value)}
+                  placeholder="الموصى بها معملياً"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-teal-500"
+                />
+                {alumLabDose && Number(alumLabDose) > 0 && prodNum > 0 ? (
+                  <span className={`text-[10px] font-bold mt-0.5 block ${
+                    Math.abs(alumDoseGmM3 - Number(alumLabDose)) <= 2 ? 'text-emerald-600' : 'text-amber-600'
+                  }`}>
+                    الفارق: {+(alumDoseGmM3 - Number(alumLabDose)).toFixed(2)} جم/م³
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-slate-400 mt-0.5 block">محددة من اختبار المعمل</span>
+                )}
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">الشبة الصلبة (طن)</label>
@@ -368,6 +390,16 @@ export const DailyDataEntry: React.FC = () => {
                   step="0.001"
                   value={alumSolid}
                   onChange={(e) => setAlumSolid(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">هيبوكلوريد (طن)</label>
+                <input
+                  type="number"
+                  step="0.001"
+                  value={hypochlorite}
+                  onChange={(e) => setHypochlorite(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
@@ -381,16 +413,6 @@ export const DailyDataEntry: React.FC = () => {
                   className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-teal-500"
                 />
                 <span className="text-[10px] text-slate-400 mt-0.5 block">الجرعة: {chlorineDoseGmM3} جم/م³</span>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">هيبوكلوريد (طن)</label>
-                <input
-                  type="number"
-                  step="0.001"
-                  value={hypochlorite}
-                  onChange={(e) => setHypochlorite(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-mono font-bold text-slate-900 outline-none focus:ring-2 focus:ring-teal-500"
-                />
               </div>
             </div>
           </div>

@@ -67,4 +67,41 @@ export const api = {
     resolve: (id: string, d: any)  => req<any>  ('PUT',  `/breakdowns/${id}/resolve`, d),
     delete:  (id: string)          => req<any>  ('DELETE',`/breakdowns/${id}`),
   },
+
+  // ── Lab Records (قياسات وتجارب المعمل والجرعات) ─────────────
+  labRecords: {
+    getAll: (params: { station_id?: string; month?: string; limit?: number } = {}) => {
+      const qs = new URLSearchParams(params as any).toString();
+      return req<any[]>('GET', `/lab-records${qs ? '?' + qs : ''}`);
+    },
+    create: (data: any)  => req<any>('POST', '/lab-records', data),
+    delete: (id: string) => req<any>('DELETE', `/lab-records/${id}`),
+  },
+
+  // ── Supply Orders (أوامر التوريد وأذون الإضافة) ─────────────
+  supplyOrders: {
+    getAll: (params: { station_id?: string; item_type?: string; month?: string; limit?: number } = {}) => {
+      const qs = new URLSearchParams(params as any).toString();
+      return req<any[]>('GET', `/supply-orders${qs ? '?' + qs : ''}`);
+    },
+    create: (data: any)  => req<any>('POST', '/supply-orders', data),
+    delete: (id: string) => req<any>('DELETE', `/supply-orders/${id}`),
+  },
+
+  // ── Inventory & Stock (المخزون والرصيد وكشف الحركة) ────────
+  inventory: {
+    getSummary: (params: { station_id?: string; item_type?: string } = {}) => {
+      const qs = new URLSearchParams(params as any).toString();
+      return req<any[]>('GET', `/inventory/summary${qs ? '?' + qs : ''}`);
+    },
+    getLedger: (params: { station_id: string; item_type?: string }) => {
+      const qs = new URLSearchParams(params as any).toString();
+      return req<any[]>('GET', `/inventory/ledger?${qs}`);
+    },
+    getSettings: (stationId?: string) => {
+      const qs = stationId ? `?station_id=${stationId}` : '';
+      return req<any[]>('GET', `/inventory/settings${qs}`);
+    },
+    updateSettings: (data: any) => req<any>('POST', '/inventory/settings', data),
+  },
 };

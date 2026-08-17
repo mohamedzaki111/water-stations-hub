@@ -1,7 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { appStore, calculateStats } from '../../store/appStore';
 import { DailyRecord } from '../../types';
 import { Table, Search, Download, Trash2, Edit3, Check, X, Filter, Calendar } from 'lucide-react';
+import { PdfExportButton } from '../Common/PdfExportButton';
+import { formatArabicNumber, toArabicDigits } from '../../utils/formatters';
 
 export const RecordsTable: React.FC = () => {
   const session = appStore.session;
@@ -16,6 +18,7 @@ export const RecordsTable: React.FC = () => {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<DailyRecord>>({});
+  const tableRef = useRef<HTMLDivElement>(null);
 
   const filteredRecords = useMemo(() => {
     let list = appStore.getRecords({
@@ -42,9 +45,17 @@ export const RecordsTable: React.FC = () => {
     setEditForm({ ...r });
   };
 
-  const handleSaveEdit = (id: string) => {
-    appStore.updateRecord(id, editForm);
-    setEditingId(null);
+  const handleSaveEdit = async (id: string) => {
+    try {
+      const res = await appStore.updateRecord(id, editForm);
+      if (res && !res.ok) {
+        alert(`تعذر حفظ التعديلات: ${res.error}`);
+        return;
+      }
+      setEditingId(null);
+    } catch (err: any) {
+      alert(`حدث خطأ أثناء الحفظ: ${err?.message || err}`);
+    }
   };
 
   const handleDelete = (id: string) => {
@@ -110,13 +121,24 @@ export const RecordsTable: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={handleExportCsv}
-          className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-2 cursor-pointer transition-all"
-        >
-          <Download size={16} />
-          <span>تصدير ملف إكسل (CSV)</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <PdfExportButton
+            targetRef={tableRef}
+            filename={`سجل_البيانات_التشغيلية_${new Date().toISOString().slice(0, 10)}`}
+            variant="dark"
+            size="md"
+            options={{ orientation: 'landscape' }}
+            label="تصدير PDF"
+          />
+
+          <button
+            onClick={handleExportCsv}
+            className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-xs flex items-center gap-2 cursor-pointer transition-all"
+          >
+            <Download size={16} />
+            <span>تصدير إكسل (CSV)</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter Bar */}
@@ -177,35 +199,37 @@ export const RecordsTable: React.FC = () => {
         </div>
       </div>
 
-      {/* Summary Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="bg-slate-900 text-white p-3 rounded-xl">
-          <div className="text-[10px] text-slate-400">عدد السجلات</div>
-          <div className="text-lg font-bold font-mono">{stats.count}</div>
-        </div>
-        <div className="bg-slate-900 text-white p-3 rounded-xl">
-          <div className="text-[10px] text-slate-400">إجمالي المياه (م³)</div>
-          <div className="text-lg font-bold font-mono text-sky-400">
-            {stats.total_prod.toLocaleString('ar-EG')}
+      {/* Exportable Container */}
+      <div ref={tableRef} id="records-table-printable" className="space-y-6">
+        {/* Summary Bar */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <div className="bg-slate-900 text-white p-3 rounded-xl">
+            <div className="text-[10px] text-slate-400">عدد السجلات</div>
+            <div className="text-lg font-bold">{toArabicDigits(stats.count)}</div>
+          </div>
+          <div className="bg-slate-900 text-white p-3 rounded-xl">
+            <div className="text-[10px] text-slate-400">إجمالي المياه (م³)</div>
+            <div className="text-lg font-bold text-sky-400">
+              {formatArabicNumber(stats.total_prod)}
+            </div>
+          </div>
+          <div className="bg-slate-900 text-white p-3 rounded-xl">
+            <div className="text-[10px] text-slate-400">متوسط الكفاءة</div>
+            <div className="text-lg font-bold text-emerald-400">
+              {toArabicDigits((stats.avg_eff * 100).toFixed(1))}%
+            </div>
+          </div>
+          <div className="bg-slate-900 text-white p-3 rounded-xl">
+            <div className="text-[10px] text-slate-400">الشبة الإجمالية (طن)</div>
+            <div className="text-lg font-bold text-teal-400">{toArabicDigits(stats.total_alum)}</div>
+          </div>
+          <div className="bg-slate-900 text-white p-3 rounded-xl">
+            <div className="text-[10px] text-slate-400">الكهرباء (ك.و.س)</div>
+            <div className="text-lg font-bold text-amber-400">
+              {formatArabicNumber(stats.total_kwh)}
+            </div>
           </div>
         </div>
-        <div className="bg-slate-900 text-white p-3 rounded-xl">
-          <div className="text-[10px] text-slate-400">متوسط الكفاءة</div>
-          <div className="text-lg font-bold font-mono text-emerald-400">
-            {(stats.avg_eff * 100).toFixed(1)}%
-          </div>
-        </div>
-        <div className="bg-slate-900 text-white p-3 rounded-xl">
-          <div className="text-[10px] text-slate-400">الشبة الإجمالية (طن)</div>
-          <div className="text-lg font-bold font-mono text-teal-400">{stats.total_alum}</div>
-        </div>
-        <div className="bg-slate-900 text-white p-3 rounded-xl">
-          <div className="text-[10px] text-slate-400">الكهرباء (ك.و.س)</div>
-          <div className="text-lg font-bold font-mono text-amber-400">
-            {stats.total_kwh.toLocaleString('ar-EG')}
-          </div>
-        </div>
-      </div>
 
       {/* Main Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -311,20 +335,20 @@ export const RecordsTable: React.FC = () => {
                 }
 
                 return (
-                  <tr key={r.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="py-3 px-3 font-mono font-bold text-slate-900">{r.date}</td>
+                  <tr key={r.id} className="hover:bg-slate-50 transition-colors break-inside-avoid">
+                    <td className="py-3 px-3 font-bold text-slate-900">{toArabicDigits(r.date)}</td>
                     <td className="py-3 px-3 font-semibold text-slate-800">{stName}</td>
-                    <td className="py-3 px-3 font-mono text-slate-800">{r.produced_m3.toLocaleString('ar-EG')}</td>
-                    <td className="py-3 px-3 font-mono text-slate-600">{r.turbid_m3.toLocaleString('ar-EG')}</td>
-                    <td className="py-3 px-3 font-mono font-bold">
+                    <td className="py-3 px-3 text-slate-800">{formatArabicNumber(r.produced_m3)}</td>
+                    <td className="py-3 px-3 text-slate-600">{formatArabicNumber(r.turbid_m3)}</td>
+                    <td className="py-3 px-3 font-bold">
                       <span className={r.efficiency >= 0.9 ? 'text-emerald-600' : 'text-rose-600'}>
-                        {(r.efficiency * 100).toFixed(1)}%
+                        {toArabicDigits((r.efficiency * 100).toFixed(1))}%
                       </span>
                     </td>
-                    <td className="py-3 px-3 font-mono">{r.alum_liquid.toFixed(3)}</td>
-                    <td className="py-3 px-3 font-mono">{r.chlorine_gas ? r.chlorine_gas.toFixed(3) : '—'}</td>
-                    <td className="py-3 px-3 font-mono">{r.electricity_kwh.toLocaleString('ar-EG')}</td>
-                    <td className="py-3 px-3 font-mono text-slate-700">{r.power_factor ? r.power_factor.toFixed(2) : '—'}</td>
+                    <td className="py-3 px-3 text-slate-800">{toArabicDigits(r.alum_liquid.toFixed(3))}</td>
+                    <td className="py-3 px-3 text-slate-800">{r.chlorine_gas ? toArabicDigits(r.chlorine_gas.toFixed(3)) : '—'}</td>
+                    <td className="py-3 px-3 text-slate-800">{formatArabicNumber(r.electricity_kwh)}</td>
+                    <td className="py-3 px-3 text-slate-700">{r.power_factor ? toArabicDigits(r.power_factor.toFixed(2)) : '—'}</td>
                     <td className="py-3 px-3 text-slate-500 max-w-[140px] truncate">{r.shift_crew}</td>
                     <td className="py-3 px-3 text-center">
                       <div className="flex items-center justify-center gap-1">
@@ -348,6 +372,7 @@ export const RecordsTable: React.FC = () => {
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </div>
   );
